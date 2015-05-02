@@ -42,6 +42,9 @@ content.each_line do |x|
 				|([A-Z]|[a-z]|\_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>
 				|#|\$|'|true|false/)
+		if m == nil
+			m=t.match(/[0-9]+/)
+		end
 		while m do
 			puts "match"
 			puts m[0]
