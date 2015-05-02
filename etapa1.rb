@@ -26,14 +26,11 @@ strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"E
 				"false"=>"FALSE","{-"=>"LCOMMENT","-}"=>"RCOMMENT"}
 correct_program=Array.new
 incorrect_program=Array.new
-variable_identifiers=Array.new
 incorrect=false
 i=1
-#string methods: each_char,match | matchdata methods: pre_match, post_match
 content.each_line do |x|
 
 	j=0	
-	#Change order to recognize complex symbols first
 	s=x.split
 	#print s
 	s.each do |t|
@@ -49,14 +46,14 @@ content.each_line do |x|
 
 		if m == nil
 			incorrect = true
-			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+j.to_s)
+			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 		else
 			if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
 				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 				|#|\$|'|true|false/) == nil) && (m.pre_match != "")
 				incorrect= true
-				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j.to_s)
+				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 			end
 		end
 		while m do
@@ -95,7 +92,7 @@ content.each_line do |x|
 			if m == nil
 				if temp != ""
 					incorrect = true
-					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j.to_s)
+					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j+1.to_s)
 				end
 			else
 				if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
@@ -103,7 +100,7 @@ content.each_line do |x|
 					|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 					|#|\$|'|true|false/) == nil) && (m.pre_match != "")
 					incorrect= true
-					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j.to_s)
+					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j+1.to_s)
 				end
 			end
 		end
