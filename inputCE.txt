@@ -1,0 +1,5 @@
+{ %n |
+    read n;
+    write n-1;
+}
+{- example program

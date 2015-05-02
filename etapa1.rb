@@ -23,10 +23,13 @@ strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"E
 				"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESS EQUAL",
 				">"=>"GREATER",">="=>"GREATER EQUAL",
 				"\/="=>"NOTEQUAL","#"=>"EMPTYCANVAS","$"=>"DOLLAR","'"=>"APOSTROPHE","true"=>"TRUE",
-				"false"=>"FALSE","{-"=>"LCOMMENT","-}"=>"RCOMMENT"}
+				"false"=>"FALSE"}
 correct_program=Array.new
 incorrect_program=Array.new
 incorrect=false
+comment=false
+commentR=0
+commentC=0
 i=1
 content.each_line do |x|
 
@@ -61,28 +64,40 @@ content.each_line do |x|
 			#puts m[0]
 			#puts "postmatch"
 			#puts m.post_match
-			if m[0] =~ /\/\\|\\\/|<=|>=|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
-				|\+|-|\*|\/|\^|<|>|#|\$|'|true|false/
-				correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
-				j+=m[0].size
+			if !comment
+				if m[0] =~ /\{-/
+					comment=true
+					commentR=i
+					commentC=j+1
+					j+=m[0].size
 
-			elsif m[0] =~ /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
-				correct_program.push("token IDENTIFIER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
-				j+=m[0].size
+				elsif m[0] =~ /\/\\|\\\/|<=|>=|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
+					|\+|-|\*|\/|\^|<|>|#|\$|'|true|false/
+					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+					j+=m[0].size
 
-			elsif m[0] =~ /[0-9]+/
-				correct_program.push("token NUMBER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
-				j+=m[0].size
+				elsif m[0] =~ /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
+					correct_program.push("token IDENTIFIER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+					j+=m[0].size
 
-			elsif m[0] =~ /\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >/
-				#puts "wait"
-				j+=m[0].size
+				elsif m[0] =~ /[0-9]+/
+					correct_program.push("token NUMBER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+					j+=m[0].size
 
+				elsif m[0] =~ /\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >/
+					#puts "wait"
+					j+=m[0].size
+
+				else
+					#puts "wait again"
+					j+=1
+				end
 			else
-				#puts "wait again"
-				j+=1
+				if m[0] =~/\-}/
+					comment=false
+				end
+				j+=m[0].size
 			end
-
 			
 			temp=m.post_match
 			m=temp.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
@@ -107,8 +122,12 @@ content.each_line do |x|
 	end
 	i+=1	
 end
-if incorrect
-	puts incorrect_program
+if comment
+	puts "Error: Comment section opened but not closed at line: "+commentR.to_s+", column: "+commentC.to_s
 else
-	puts correct_program
+	if incorrect
+		puts incorrect_program
+	else
+		puts correct_program
+	end
 end
