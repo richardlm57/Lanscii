@@ -27,6 +27,7 @@ strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"E
 correct_program=Array.new
 incorrect_program=Array.new
 variable_identifiers=Array.new
+incorrect=false
 i=1
 #string methods: each_char,match | matchdata methods: pre_match, post_match
 content.each_line do |x|
@@ -42,6 +43,19 @@ content.each_line do |x|
 				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 				|#|\$|'|true|false/)
+
+		if m == nil
+			incorrect = true
+			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+j.to_s)
+		else
+			if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
+				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
+				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
+				|#|\$|'|true|false/) == nil) && (m.pre_match != "")
+				incorrect= true
+				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j.to_s)
+			end
+		end
 		while m do
 			puts "match"
 			puts m[0]
@@ -71,8 +85,26 @@ content.each_line do |x|
 				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 				|#|\$|'|true|false/)
+			if m == nil
+				if temp != ""
+					incorrect = true
+					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j.to_s)
+				end
+			else
+				if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
+					|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
+					|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
+					|#|\$|'|true|false/) == nil) && (m.pre_match != "")
+					incorrect= true
+					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j.to_s)
+				end
+			end
 		end
 	end
 	i+=1	
 end
-puts correct_program
+if incorrect
+	puts incorrect_program
+else
+	puts correct_program
+end
