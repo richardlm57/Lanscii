@@ -30,6 +30,10 @@ incorrect=false
 comment=false
 commentR=0
 commentC=0
+varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
+		|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
+		|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
+		|#|\$|'|true|false/
 i=1
 content.each_line do |x|
 
@@ -42,19 +46,13 @@ content.each_line do |x|
 		while x[j]!=t[0] do
 			j+=1
 		end
-		m=t.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
-				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
-				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
-				|#|\$|'|true|false/)
+		m=t.match(varMatch)
 
 		if m == nil
 			incorrect = true
 			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 		else
-			if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
-				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
-				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
-				|#|\$|'|true|false/) == nil) && (m.pre_match != "")
+			if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
 				incorrect= true
 				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 			end
@@ -71,8 +69,12 @@ content.each_line do |x|
 					commentC=j+1
 					j+=m[0].size
 
-				elsif m[0] =~ /\/\\|\\\/|<=|>=|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
-					|\+|-|\*|\/|\^|<|>|#|\$|'|true|false/
+				elsif m[0] =~ /<\/>|<\\>|<\|>|<_>|<->|<\ >/
+					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+					j+=m[0].size
+
+				elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
+					|\+|-|\*|\/|\^|#|\$|'|true|false/
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
 
@@ -84,12 +86,7 @@ content.each_line do |x|
 					correct_program.push("token NUMBER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
 
-				elsif m[0] =~ /\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >/
-					#puts "wait"
-					j+=m[0].size
-
 				else
-					#puts "wait again"
 					j+=1
 				end
 			else
@@ -100,20 +97,14 @@ content.each_line do |x|
 			end
 			
 			temp=m.post_match
-			m=temp.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
-				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
-				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
-				|#|\$|'|true|false/)
+			m=temp.match(varMatch)
 			if m == nil
 				if temp != ""
 					incorrect = true
 					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j+1.to_s)
 				end
 			else
-				if (n=m.pre_match.match(/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|
-					|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
-					|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
-					|#|\$|'|true|false/) == nil) && (m.pre_match != "")
+				if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
 					incorrect= true
 					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j+1.to_s)
 				end
