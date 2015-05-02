@@ -1,5 +1,0 @@
-{- examplesa vclasbvjasuivbdvdzbcv
-{ %n |
-    read n;
-    write n-1;
-}

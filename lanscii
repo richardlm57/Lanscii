@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-#½
-
 =begin
 
 	@title	Anlisis Lexicográfico
@@ -43,29 +41,24 @@ content.each_line do |x|
 
 	j=0	
 	s=x.split
-	#print s
 	s.each do |t|
-		#puts "\nsplit"
-		#puts t
 		while x[j]!=t[0] do
 			j+=1
 		end
 		m=t.match(varMatch)
 
-		if m == nil
-			incorrect = true
-			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
-		else
-			if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
-				incorrect= true
-				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
+		if !comment
+			if m == nil
+				incorrect = true
+				incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
+			else
+				if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
+					incorrect= true
+					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
+				end
 			end
 		end
 		while m do
-			#puts "match"
-			#puts m[0]
-			#puts "postmatch"
-			#puts m.post_match
 			if !comment
 				if m[0] =~ /\{-/
 					comment=true
@@ -105,12 +98,12 @@ content.each_line do |x|
 			if m == nil
 				if temp != ""
 					incorrect = true
-					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j+1.to_s)
+					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 				end
 			else
 				if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
 					incorrect= true
-					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j+1.to_s)
+					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
 				end
 			end
 		end
