@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-#½
-
 =begin
 
 	@title	Anlisis Lexicográfico
@@ -54,11 +52,15 @@ content.each_line do |x|
 
 		if m == nil
 			incorrect = true
-			incorrect_program.push("Error: Unexpected character: \""+t+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
+			for k in 0..(t.size-1)
+				incorrect_program.push("Error: Unexpected character: \""+t[k]+"\" at line: "+i.to_s+", column: "+(j+1+k).to_s)
+			end
 		else
 			if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
 				incorrect= true
-				incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+(j+1).to_s)
+				for k in 0..((m.pre_match).size-1)
+					incorrect_program.push("Error: Unexpected character: \""+m.pre_match[k]+"\" at line: "+i.to_s+", column: "+(j+1+k).to_s)
+				end
 			end
 		end
 		while m do
@@ -105,12 +107,16 @@ content.each_line do |x|
 			if m == nil
 				if temp != ""
 					incorrect = true
-					incorrect_program.push("Error: Unexpected character: \""+temp+"\" at line: "+i.to_s+", column: "+j+1.to_s)
+					for k in 0..(temp.size-1)
+						incorrect_program.push("Error: Unexpected character: \""+temp[k]+"\" at line: "+i.to_s+", column: "+(j+1+k).to_s)
+					end
 				end
 			else
 				if (n=m.pre_match.match(varMatch) == nil) && (m.pre_match != "")
 					incorrect= true
-					incorrect_program.push("Error: Unexpected character: \""+m.pre_match+"\" at line: "+i.to_s+", column: "+j+1.to_s)
+					for k in 0..((m.pre_match).size-1)
+						incorrect_program.push("Error: Unexpected character: \""+m.pre_match[k]+"\" at line: "+i.to_s+", column: "+(j+1+k).to_s)
+					end
 				end
 			end
 		end
