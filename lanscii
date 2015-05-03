@@ -22,7 +22,7 @@ file.close
 
 strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATION MARK",
 				"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
-				"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS","."=>"DOT",","=>"COMMA",";"=>"SEMICOLON",
+				"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLE DOT",","=>"COMMA",";"=>"SEMICOLON",
 				"read"=>"READ","write"=>"WRITE","?"=>"QUESTION MARK",
 				":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS",
 				"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
@@ -37,9 +37,9 @@ incorrect=false # Determina si un programa es incorrecto
 comment=false 	# Determina si se está dentro de un comentario
 commentR=0		# Línea del inicio de comentario
 commentC=0		# Columna del inicio de comentario
-varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|
+varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|\.\.|
 		|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
-		|\{|\}|\||%|!|@|=|;|\.|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
+		|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 		|#|,|\$|'|true|false/ 	# Expresión regular para reconocer las palabras reservadas de LANSCII
 i=1		# Contador de línea
 
@@ -81,7 +81,7 @@ content.each_line do |x|	# Se itera por las líneas del archivo reconociendo sí
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
 
-				elsif m[0] =~ /\/=|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|<|>|\{|\}|\||%|!|@|=|\.|;|read|write|\?|:|\(|\)|
+				elsif m[0] =~ /\/=|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
 					|\+|-|\*|\/|\^|#|,|\$|'|true|false/
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
