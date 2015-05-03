@@ -12,7 +12,7 @@ Autores: Richard Lares 11-10508
 Para el analizador lexicográfico del lenguaje Lanscii se decidió realizar la 
 verificación del contenido del archivo línea por línea haciendo uso del método
 "match" implementado para la clase String, la cual recibe como parámetro una 
-expresión regular que en este caso será una regex que representará las palabras 
+expresión regular que en este caso será una regexp que representará las palabras 
 reservadas del lenguaje Lanscii de manera jerárquica. Antes de hacer esta 
 verificación se decidió usar la función "split", también de la clase String, 
 para eliminar los espacios y/o tabuladores de cada línea para poder "matchear" 
@@ -29,7 +29,7 @@ en caso de un lenguaje correcto o incorrecto.
 	Estado actual del proyecto
 
 Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos archivos 
-y el analizador lexicográfico funcionó correctamente
+y el analizador lexicográfico funcionó sin ningún inconveniente.
 
 	Problemas presentes
 
@@ -37,4 +37,14 @@ En proceso
 
 	Cualquier comentario respecto al proyecto que consideren necesario
 
-{- -}
+Para lograr reconocer identificadores en el lenguaje, se decidió agregar a la expresión 
+del "matcheo" la siguiente expresión:
+
+			([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*
+
+Así, se logra identificar todo tipo de combinaciones posibles en un identificador.
+En el caso de discernir símbolos que no forman parte del lenguaje, se decidió 
+hacer un escaneo a los elementos que se desprenden de una estructura MatchData: 
+match (resultado del "matcheo"), pre_match() y post_match(). Con esto se pudo 
+analizar todo tipo de combinaciones a la hora de existir algun elemento no perteneciente 
+al lenguaje.
