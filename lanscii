@@ -78,7 +78,7 @@ content.each_line do |x|	# Se itera por las líneas del archivo reconociendo sí
 					j+=m[0].size
 
 				elsif m[0] =~ /-}/
-					correct_program.push("token "+strings_dic[m[0][0]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+					correct_program.push("token "+strings_dic[m[0][0]]+" value ("+m[0][0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=1
 					correct_program.push("token "+strings_dic[m[0][1]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=1
