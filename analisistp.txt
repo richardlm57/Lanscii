@@ -15,10 +15,9 @@ reconozca el lenguaje L denotado por E. De acuerdo con la definición
 de los comentarios en Lanscii, explique brevemente cuáles son las deci-
 siones tomadas al construir la expresión regular E para que efectivamente
 sean cumplidas las restricciones de un comentario válido y porqué éstas
-funcionan.
+funcionan. 
 
-  	R: 
-
+  	R: E: /{-.*-}/ (No se usó escape para { ni },)
 
 2. Proporcione dos expresiones regulares: E0 y E1 para el reconocimiento de
 la palabra reservada write y los identificadores de variables del lenguaje
