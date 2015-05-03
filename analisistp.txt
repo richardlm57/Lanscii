@@ -1,3 +1,13 @@
+Universidad Simon Bolivar
+Departamento de Computacion y Tecnologia de la informacion
+CI3725 - Traductores e Interpretadores
+
+Analisis Teorico - Practico
+
+Autores: Richard Lares. 11-10508
+		 Oscar Guillen. 11-11264
+
+
 1. Proporcione una expresión regular E que corresponda a los comentarios
 definidos en Lanscii. Dé el diagrama de transición (la representación
 gráfica) de un autómata finito (posiblemente no-determinístico) M que
@@ -7,22 +17,42 @@ siones tomadas al construir la expresión regular E para que efectivamente
 sean cumplidas las restricciones de un comentario válido y porqué éstas
 funcionan.
 
+  R: 
+
+
 2. Proporcione dos expresiones regulares: E0 y E1 para el reconocimiento de
 la palabra reservada write y los identificadores de variables del lenguaje
 respectivamente.
+
+  R: 
+  		E0: /write/                 E1: /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
+
+
 
 3. Dé los diagramas de transición (la representación gráfica) de dos autómantas
 finitos (posiblemente no-determinísticos): M0 y M1 que reconozcan los
 lenguajes L0 y L1 denotados por E0 y E1 respectivamente.
 
+
+  R: Diagramas plasmados en las imagenes M0.jpg y M1.jpg
+
+
+
 4. Proponga el diagrama de transición de un autómata finito no-determinístico
 M2 que reconozca la unión de los lenguajes L(M0) y L(M1).
+
+
+  R: Diagramas plasmados en las imagenes M0_M1.jpg
+
 
 5. Un analizador lexicográfico debe ser capaz de discernir a cuál lenguaje
 pertenece una palabra (o, en este caso, token) que acaba de reconocer. De
 acuerdo con esto, cada estado final del autómata M2 debe ser capaz de
 diferenciar si la palabra reconocida pertenece al lenguaje L(M0) o L(M1).
 Inidique lo anterior en cada estado final de M2.
+
+
+  R: 
 
 6. La asignación anterior de estados finales a lenguajes debe de crear conflictos
 de reconocimiento, indique cuáles son estos problemas y porqué ocurren.
