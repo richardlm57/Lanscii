@@ -89,7 +89,6 @@ content.each_line do |x|	# Se itera por las líneas del archivo reconociendo sí
 
 				elsif m[0] =~ /\/=|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
 					|\+|\-|\*|\/|\^|#|,|\$|'|true|false/
-					puts m[0]
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
 
