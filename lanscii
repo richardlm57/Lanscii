@@ -26,7 +26,7 @@ strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"E
 				"read"=>"READ","write"=>"WRITE","?"=>"QUESTION MARK",
 				":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS",
 				"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
-				"\/\\backslash\{\}"=>"AND","\\backslash\{\}\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESS EQUAL",
+				"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESS EQUAL",
 				">"=>"GREATER",">="=>"GREATER EQUAL",
 				"\/="=>"NOTEQUAL","#"=>"EMPTYCANVAS","$"=>"DOLLAR","'"=>"APOSTROPHE","true"=>"TRUE",
 				"false"=>"FALSE"}
@@ -37,7 +37,7 @@ incorrect=false # Determina si un programa es incorrecto
 comment=false 	# Determina si se está dentro de un comentario
 commentR=0		# Línea del inicio de comentario
 commentC=0		# Columna del inicio de comentario
-varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|\.\.|
+varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|\.\.|
 		|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 		|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|
 		|#|,|\$|'|true|false/ 	# Expresión regular para reconocer las palabras reservadas de LANSCII
@@ -87,7 +87,7 @@ content.each_line do |x|	# Se itera por las líneas del archivo reconociendo sí
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
 
-				elsif m[0] =~ /\/=|\/\\backslash\{\}|\\backslash\{\}\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
+				elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|
 					|\+|\-|\*|\/|\^|#|,|\$|'|true|false/
 					correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
 					j+=m[0].size
