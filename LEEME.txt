@@ -1,0 +1,35 @@
+=begin
+
+	@title	Análisis Lexicográfico del interpretador para el lenguaje Lanscii
+
+	@author	Richard Lares 11-10508
+	@author	Oscar Guillen 11-11264
+
+	@description LEEME.txt del análisis lexicográfico para el interpretador de Lanscii
+
+=end
+
+	Decisiones de implementación
+
+Para el blabla se decidió realizar la verificación del contenido del archivo línea por línea haciendo uso del método "match"
+implementado para la clase String, la cual recibe como parámetro una expresión regular que en este caso será una regex que
+representará las palabras reservadas del lenguaje Lanscii de manera jerárquica. Antes de hacer esta verificación se decidió
+usar la función "split", también de la clase String, para eliminar los espacios y/o tabuladores de cada línea para poder
+"matchear" correctamente las expresiones; sin embargo se usó un contador que recorre la línea original para imprimir
+la columna correcta donde fue encontrado el token. Se aprovecha lo retornado por la función "match" para continuar el
+matcheo dentro de cada posición del arreglo split, esto para el caso en que hayan tokens seguidos en una misma posición del 
+arreglo. Para imprimir el identificador de cada token se decidió usar un Hash (Diccionario), que tiene como clave el símbolo 
+y como valor el string identificador. Se decidió usar variables contadores de línea y de columna, y arreglos para almacenar
+los strings que deben imprimirse en caso de un lenguaje correcto o incorrecto.
+
+	Estado actual del proyecto
+
+Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos archivos y el analizador lexicográfico funcónó correctamente
+
+	Problemas presentes
+
+En proceso
+
+	Cualquier comentario respecto al proyecto que consideren necesario
+
+{- -}

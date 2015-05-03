@@ -2,12 +2,12 @@
 
 =begin
 
-	@title	Anlisis Lexicográfico
+	@title	Anlisis Lexicográfico del interpretador para el lenguaje Lanscii
 
 	@author	Richard Lares 11-10508
 	@author	Oscar Guillen 11-11264
 
-	@description
+	@description Código fuente del análisis lexicográfico para el interpretador de Lanscii
 
 =end
 
