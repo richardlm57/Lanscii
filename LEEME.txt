@@ -33,8 +33,6 @@ archivos y el analizador lexicográfico funcionó sin ningún inconveniente.
 
 	Problemas presentes
 
-En proceso
-
 	Cualquier comentario respecto al proyecto que consideren necesario
 
 Para lograr reconocer identificadores en el lenguaje, se decidió agregar a la 

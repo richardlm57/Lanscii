@@ -17,15 +17,18 @@ siones tomadas al construir la expresión regular E para que efectivamente
 sean cumplidas las restricciones de un comentario válido y porqué éstas
 funcionan. 
 
+
   	R: E: /{-.*-}/ (No se usó escape para { ni },)
+
 
 2. Proporcione dos expresiones regulares: E0 y E1 para el reconocimiento de
 la palabra reservada write y los identificadores de variables del lenguaje
 respectivamente.
 
-  	R: 
-  		E0: /write/ 	E1: /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
 
+  	R: 	E0: /write/ 	
+
+  		E1: /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
 
 
 3. Dé los diagramas de transición (la representación gráfica) de dos autómantas
@@ -34,7 +37,6 @@ lenguajes L0 y L1 denotados por E0 y E1 respectivamente.
 
 
  	R: Diagramas plasmados en las imagenes M0.png y M1.png
-
 
 
 4. Proponga el diagrama de transición de un autómata finito no-determinístico
@@ -55,8 +57,10 @@ Inidique lo anterior en cada estado final de M2.
   	logran diferenciar a cuál lenguaje pertenece una palabra dada: QfM0 reconoce 
   	el lenguaje L(M0) y QfM1 reconoce el lenguaje L(M1).
 
+
 6. La asignación anterior de estados finales a lenguajes debe de crear conflictos
 de reconocimiento, indique cuáles son estos problemas y porqué ocurren.
+
 
 	R: Es posible que existan palabras que formen parte de ambos lenguajes, lo 
 	cual genera	un conflicto debido a que no es posible saber cuál transición 
@@ -65,9 +69,11 @@ de reconocimiento, indique cuáles son estos problemas y porqué ocurren.
 	no será posible seguir formado palabras del otro lenguaje debido a que las 
 	transiciones tomadas fueron aquellas pertenecientes al lenguaje "incorrecto".
 
+
 7. De acuerdo con la pregunta anterior, indique cuáles son los conflictos del
 autómata propuesto M2, especificando las palabras que los generan, los
 lenguajes y estados finales involucrados.
+
 
 	R: Para el caso particular del autómata M2 se presenta un conflicto con la
 	palabra que reconoce L(M0), write, debido a que L(M1) también acepta esta 
@@ -75,9 +81,11 @@ lenguajes y estados finales involucrados.
 	transición tomar cuando se reconozca la palabra write, y por tanto decidir
 	a qué lenguaje pertenece.
 
+
 8. Diga cuál solución puede ser utilizada para resolver los conflictos de re-
 conocimiento desarrollados en las preguntas 6 y 7. Explique brevemente
 su solución y por qué funciona.
+
 
 	R: Para resolver este problema se podría replantear el autómata M2' formado 
 	por la unión de los autómatas M0' y M1', donde los primeros estados de M1' 
@@ -87,8 +95,10 @@ su solución y por qué funciona.
 	M2' mantendrá los mismos estados finales que reconocen L(M0) y L(M1).
 	El diagrama queda plasmado en M2'.png
 
+
 9. ¿Cómo relaciona Ud. el desarrollo de las preguntas 2-8 con la imple-
 mentación de su analizador lexicográfico para el lenguaje Lanscii?
+
 
 	R: Con el desarrollo de estas preguntas se tomó en cuenta los posibles
 	conflictos que se podían generar con esta palabra del lenguaje Lanscii
