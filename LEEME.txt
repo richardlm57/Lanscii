@@ -28,8 +28,8 @@ en caso de un lenguaje correcto o incorrecto.
 
 	Estado actual del proyecto
 
-Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos archivos 
-y el analizador lexicográfico funcionó sin ningún inconveniente.
+Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos 
+archivos y el analizador lexicográfico funcionó sin ningún inconveniente.
 
 	Problemas presentes
 
@@ -37,14 +37,15 @@ En proceso
 
 	Cualquier comentario respecto al proyecto que consideren necesario
 
-Para lograr reconocer identificadores en el lenguaje, se decidió agregar a la expresión 
-del "matcheo" la siguiente expresión:
+Para lograr reconocer identificadores en el lenguaje, se decidió agregar a la 
+expresión del "matcheo" la siguiente expresión:
 
 			([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*
 
 Así, se logra reconocer todo tipo de combinaciones posibles en un identificador.
 En el caso de discernir símbolos que no forman parte del lenguaje, se decidió 
-hacer un escaneo a los elementos que contiene una estructura MatchData devuelta al
-hacer match: resultado del "matcheo", pre_match (substring anterior al string "matcheado") 
-y post_match (substring posterior al string "matcheado"). Con esto se pudo analizar todo tipo
-de combinaciones a la hora de existir algun elemento no perteneciente al lenguaje.
+hacer un escaneo a los elementos que contiene una estructura MatchData devuelta 
+por la función match: resultado del "matcheo", pre_match (substring anterior al 
+string "matcheado") y post_match (substring posterior al string "matcheado"). 
+Con esto se pudo analizar todo tipo de combinaciones a la hora de existir algun 
+elemento no perteneciente al lenguaje.
