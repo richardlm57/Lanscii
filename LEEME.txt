@@ -15,7 +15,7 @@ verificación del contenido del archivo línea por línea haciendo uso del méto
 expresión regular que en este caso será una regexp que representará las palabras 
 reservadas del lenguaje Lanscii de manera jerárquica. Antes de hacer esta 
 verificación se decidió usar la función "split", también de la clase String, 
-para eliminar los espacios y/o tabuladores de cada línea para poder "matchear" 
+para eliminar los espacios y/o tabuladores de cada línea y así poder "matchear" 
 correctamente las expresiones; sin embargo se usó un contador que recorre la 
 línea original para imprimir la columna correcta donde fue encontrado el token.
 Se aprovecha lo retornado por la función "match" para continuar el matcheo 
@@ -42,9 +42,9 @@ del "matcheo" la siguiente expresión:
 
 			([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*
 
-Así, se logra identificar todo tipo de combinaciones posibles en un identificador.
+Así, se logra reconocer todo tipo de combinaciones posibles en un identificador.
 En el caso de discernir símbolos que no forman parte del lenguaje, se decidió 
-hacer un escaneo a los elementos que se desprenden de una estructura MatchData: 
-match (resultado del "matcheo"), pre_match() y post_match(). Con esto se pudo 
-analizar todo tipo de combinaciones a la hora de existir algun elemento no perteneciente 
-al lenguaje.
+hacer un escaneo a los elementos que contiene una estructura MatchData devuelta al
+hacer match: resultado del "matcheo", pre_match (substring anterior al string "matcheado") 
+y post_match (substring posterior al string "matcheado"). Con esto se pudo analizar todo tipo
+de combinaciones a la hora de existir algun elemento no perteneciente al lenguaje.
