@@ -1,4 +1,6 @@
 { %x y @lie !boo |
+    {};
+    [2 .. 6] do;
     x = 10 ;
     y = 15 ;
     boo = false ;
