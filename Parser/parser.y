@@ -1,92 +1,90 @@
 class Parser
 
-token 	'{' '|' '}' '%' '!' '@' '=' 'read' 'write' ';' '(' '?' ')' 
-		':' '[' ']' '..' '+' '-' '*' '/' '%' '/\' '\/' '^' 'true' 'false'
-		'<' '<=' '>' '>=' '=' '/=' '&' '~' '$' ''' '</>' '<\>' '<|>'
-		'<_>' '<->' '< >' '#' ID NUM
+token 	LCURLY PIPE RCURLY PERCENTAGE EXCLAMATIONMARK AT EQUALS READ WRITE SEMICOLON 
+		LPARENTHESIS QUESTIONMARK RPARENTHESIS COLON LSQUARE RSQUARE DOUBLEDOT PLUS MINUS TIMES DIVIDE 
+		AND OR NOT TRUE FALSE LESS LESSEQUAL GREATER GREATEREQUAL NOTEQUAL AMPERSAND TILDE DOLLAR 
+		APOSTROPHE CANVAS EMPTYCANVAS ID NUM UMINUS
 
 prechigh
 	nonassoc UMINUS
-	left '*' '/' '%'
-	left '+' '-'
-	nonassoc '^'
-	left '/\'
-	left '\/'
-	nonassoc '''
-	nonassoc '$'
-	left '&' '~''
-	nonassoc '<' '<=' '>' '>='
-	nonassoc '=' '/='
+	left TIMES DIVIDE PERCENTAGE
+	left PLUS MINUS
+	nonassoc NOT
+	left AND
+	left OR
+	nonassoc APOSTROPHE
+	nonassoc DOLLAR
+	left AMPERSAND TILDE
+	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL
+	nonassoc EQUALS NOTEQUAL
+preclow
+
+start S
 
 rule
-	S	:	'{' D '|' C '}' 
-		|	'{' C '}'
+	S	:	LCURLY D PIPE C RCURLY 
+		|	LCURLY C RCURLY
 
-	D	:	'%' I 
-		|	'!' I
-		|	'@' I
+	D	:	PERCENTAGE I 
+		|	EXCLAMATIONMARK I
+		|	AT I
 		|	D D
 
 	I	:	ID I
 		| 	ID
 
-	C 	: 	ID '=' Ea
-		|	ID '=' Eb
-		|	ID '=' Ec
-		| 	ID '=' ID
+	C 	: 	ID EQUALS Ea
+		|	ID EQUALS Eb
+		|	ID EQUALS Ec
+		| 	ID EQUALS ID
 		| 	S
-		|	'read' ID
-		| 	'write' ID
+		|	READ ID
+		| 	WRITE ID
 		|	Cond
 		|	It
-		|	C ';' C
+		|	C SEMICOLON C
 
-	Cond:	'(' Eb '?' C ')'
-		|	'(' Eb '?' C ':' C ')'
+	Cond:	LPARENTHESIS Eb QUESTIONMARK C RPARENTHESIS
+		|	LPARENTHESIS Eb QUESTIONMARK C COLON C RPARENTHESIS
 
-	It	: 	'[' Eb '|' C ']'
-		|	'[' Ea '..' Ea '|' C ']'
-		|	'[' ID ':' Ea '..' Ea '|' C ']'
+	It	: 	LSQUARE Eb PIPE C RSQUARE
+		|	LSQUARE Ea DOUBLEDOT Ea PIPE C RSQUARE
+		|	LSQUARE ID COLON Ea DOUBLEDOT Ea PIPE C RSQUARE
 
-	Ea	:	Ea '+' Ea
-		|	Ea '-' Ea
-		|	Ea '*' Ea
-		|	Ea '/' Ea
-		|	Ea '%' Ea
-		|	'-' Ea	=UMINUS
-		|	'(' Ea ')'
+	Ea	:	Ea PLUS Ea
+		|	Ea MINUS Ea
+		|	Ea TIMES Ea
+		|	Ea DIVIDE Ea
+		|	Ea PERCENTAGE Ea
+		|	MINUS Ea	=UMINUS
+		|	LPARENTHESIS Ea RPARENTHESIS
 		|	ID
 		|	NUM
 
-	Eb	:	Eb '/\' Eb
-		|	Eb '\/' Eb
-		|	Eb '^'
-		| 	'(' Eb ')'
+	Eb	:	Eb AND Eb
+		|	Eb OR Eb
+		|	Eb NOT
+		| 	LPARENTHESIS Eb RPARENTHESIS
 		|	ID
-		|	'true'
-		|	'false'
-		|	Ea '<' Ea
-		|	Ea '<=' Ea
-		|	Ea '>' Ea
-		|	Ea '>=' Ea
-		|	Ea '=' Ea
-		|	Ea '/=' Ea
-		|	Eb '=' Eb
-		|	Eb '/=' Eb
-		|	Ec '=' Ec
-		|	Ec '/=' Ec
+		|	TRUE
+		|	FALSE
+		|	Ea LESS Ea
+		|	Ea LESSEQUAL Ea
+		|	Ea GREATER Ea
+		|	Ea GREATEREQUAL Ea
+		|	Ea EQUALS Ea
+		|	Ea NOTEQUAL Ea
+		|	Eb EQUALS Eb
+		|	Eb NOTEQUAL Eb
+		|	Ec EQUALS Ec
+		|	Ec NOTEQUAL Ec
 
-	Ec	:	Ec '&' Ec
-		|	Ec '~' Ec
-		|	'$' Ec
-		|	Ec '''
-		| 	'(' Ec ')'
-		|	'</>'
-		|	'<\>'
-		|	'<|>'
-		|	'<_>'
-		|	'<->' 
-		|	'< >'
-		|	'#'
+	Ec	:	Ec AMPERSAND Ec
+		|	Ec TILDE Ec
+		|	DOLLAR Ec
+		|	Ec APOSTROPHE
+		| 	LPARENTHESIS Ec RPARENTHESIS
+		|	CANVAS
+		|	EMPTYCANVAS
 
 end

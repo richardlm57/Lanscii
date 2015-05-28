@@ -64,14 +64,14 @@ class Lexer
 
 		# Diccionario de tokens con su identificador
 
-		strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATION MARK",
+		strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
 						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
-						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLE DOT",","=>"COMMA",";"=>"SEMICOLON",
-						"read"=>"READ","write"=>"WRITE","?"=>"QUESTION MARK","&"=>"AMPERSAND","~"=>"TILDE"
+						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",","=>"COMMA",";"=>"SEMICOLON",
+						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK","&"=>"AMPERSAND","~"=>"TILDE"
 						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
 						"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
-						"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESS EQUAL",
-						">"=>"GREATER",">="=>"GREATER EQUAL",
+						"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESSEQUAL",
+						">"=>"GREATER",">="=>"GREATEREQUAL",
 						"\/="=>"NOTEQUAL","#"=>"EMPTYCANVAS","$"=>"DOLLAR","'"=>"APOSTROPHE","true"=>"TRUE",
 						"false"=>"FALSE"}
 
