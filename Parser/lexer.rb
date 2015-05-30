@@ -11,63 +11,26 @@
 
 =end
 
-class IdString
-	def initialize(value)
-		@value=value
-	end
-
-	def to_s
-		@value.to_s
-	end
-end
-
-class Number
-	def initialize(value)
-		@value=value
-	end
-
-	def to_s
-		@value.to_s
-	end
-end
-
-class Canvas
-	def initialize(value)
-		@value=value
-	end
-
-	def to_s
-		@value.to_s
-	end
-end
-
-class Symbol
-	def initialize(value)
-		@value=value
-	end
-
-	def to_s
-		@value.to_s
-	end
-end
-
 
 class Lexer
-	def lexing(f)
+	def initialize(f)
+		@file=f
+	end
+
+	def matching
 
 		# Lectura del contenido del archivo de entrada
 
-		name = f
-		file = File.open(name,"r")
+		file = File.open(@file,"r")
 		content = file.read
 		file.close
 
 		# Diccionario de tokens con su identificador
 
-		strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
+		strings_dic = strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
 						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
 						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",","=>"COMMA",";"=>"SEMICOLON",
-						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK","&"=>"AMPERSAND","~"=>"TILDE"
+						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK", "&"=>"AMPERSAND", "~"=>"TILDE",
 						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
 						"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
 						"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESSEQUAL",
@@ -180,9 +143,9 @@ class Lexer
 			puts "Error: Comment section opened but not closed at line: "+commentR.to_s+", column: "+commentC.to_s 
 		else
 			if incorrect 	# Si el programa es incorrecto, sólo se imprimen los errores del programa
-				puts incorrect_program	
+				return incorrect_program	
 			else			# Si el programa es correcto, se imprimen los símbolos reconocidos
-				puts correct_program	
+				return correct_program	
 			end
 		end
 	end

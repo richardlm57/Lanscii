@@ -78,3 +78,18 @@ rule
 		|	EMPTYCANVAS
 
 end
+
+---- header----
+
+require './lexer.rb'
+
+---- inner ----
+
+def parse(t)
+	@lexer=t
+	do_parse
+end
+def next_token
+	puts @lexer
+	@lexer.shift
+end

@@ -1,0 +1,1842 @@
+
+
+-------- Grammar --------
+
+rule 1 S: LCURLY D PIPE C RCURLY
+rule 2 S: LCURLY C RCURLY
+rule 3 D: PERCENTAGE I
+rule 4 D: EXCLAMATIONMARK I
+rule 5 D: AT I
+rule 6 I: ID I
+rule 7 I: ID D
+rule 8 I: ID
+rule 9 C: ID EQUALS E
+rule 10 C: S
+rule 11 C: READ ID
+rule 12 C: WRITE ID
+rule 13 C: Cond
+rule 14 C: It
+rule 15 C: C SEMICOLON C
+rule 16 Cond: LPARENTHESIS E QUESTIONMARK C RPARENTHESIS
+rule 17 Cond: LPARENTHESIS E QUESTIONMARK C COLON C RPARENTHESIS
+rule 18 It: LSQUARE E PIPE C RSQUARE
+rule 19 It: LSQUARE E DOUBLEDOT E PIPE C RSQUARE
+rule 20 It: LSQUARE ID COLON E DOUBLEDOT E PIPE C RSQUARE
+rule 21 E: ID
+rule 22 E: NUM
+rule 23 E: E PLUS E
+rule 24 E: E MINUS E
+rule 25 E: E TIMES E
+rule 26 E: E DIVIDE E
+rule 27 E: E PERCENTAGE E
+rule 28 E: MINUS E
+rule 29 E: LPARENTHESIS E RPARENTHESIS
+rule 30 E: E AND E
+rule 31 E: E OR E
+rule 32 E: E NOT
+rule 33 E: TRUE
+rule 34 E: FALSE
+rule 35 E: E LESS E
+rule 36 E: E LESSEQUAL E
+rule 37 E: E GREATER E
+rule 38 E: E GREATEREQUAL E
+rule 39 E: E EQUALS E
+rule 40 E: E NOTEQUAL E
+rule 41 E: E AMPERSAND E
+rule 42 E: E TILDE E
+rule 43 E: DOLLAR E
+rule 44 E: E APOSTROPHE
+rule 45 E: CANVAS
+rule 46 E: EMPTYCANVAS
+
+------- Symbols -------
+
+**Nonterminals, with rules where they appear
+
+  $start (42)
+    on right: 
+    on left : 
+  S (43)
+    on right: 10
+    on left : 1 2
+  D (44)
+    on right: 1 7
+    on left : 3 4 5
+  C (45)
+    on right: 1 2 15 16 17 18 19 20
+    on left : 9 10 11 12 13 14 15
+  I (46)
+    on right: 3 4 5 6
+    on left : 6 7 8
+  E (47)
+    on right: 9 16 17 18 19 20 23 24 25 26 27 28 29 30 31 32 35 36 37 38 39 40 41 42 43 44
+    on left : 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
+  Cond (48)
+    on right: 13
+    on left : 16 17
+  It (49)
+    on right: 14
+    on left : 18 19 20
+
+**Terminals, with rules where they appear
+
+  $end (0) 
+  error (1) 
+  LCURLY (2) 1 2
+  PIPE (3) 1 18 19 20
+  RCURLY (4) 1 2
+  PERCENTAGE (5) 3 27
+  EXCLAMATIONMARK (6) 4
+  AT (7) 5
+  EQUALS (8) 9 39
+  READ (9) 11
+  WRITE (10) 12
+  SEMICOLON (11) 15
+  LPARENTHESIS (12) 16 17 29
+  QUESTIONMARK (13) 16 17
+  RPARENTHESIS (14) 16 17 29
+  COLON (15) 17 20
+  LSQUARE (16) 18 19 20
+  RSQUARE (17) 18 19 20
+  DOUBLEDOT (18) 19 20
+  PLUS (19) 23
+  MINUS (20) 24 28
+  TIMES (21) 25
+  DIVIDE (22) 26
+  AND (23) 30
+  OR (24) 31
+  NOT (25) 32
+  TRUE (26) 33
+  FALSE (27) 34
+  LESS (28) 35
+  LESSEQUAL (29) 36
+  GREATER (30) 37
+  GREATEREQUAL (31) 38
+  NOTEQUAL (32) 40
+  AMPERSAND (33) 41
+  TILDE (34) 42
+  DOLLAR (35) 43
+  APOSTROPHE (36) 44
+  CANVAS (37) 45
+  EMPTYCANVAS (38) 46
+  ID (39) 6 7 8 9 11 12 20 21
+  NUM (40) 22
+  UMINUS (41) 
+
+--------- State ---------
+
+state 0
+
+
+  LCURLY        shift, and go to state 2
+
+  S             go to state 1
+
+state 1
+
+
+  $end          shift, and go to state 3
+
+
+state 2
+
+   1) S : LCURLY _ D PIPE C RCURLY
+   2) S : LCURLY _ C RCURLY
+
+  LCURLY        shift, and go to state 2
+  PERCENTAGE    shift, and go to state 6
+  EXCLAMATIONMARK  shift, and go to state 7
+  AT            shift, and go to state 8
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  D             go to state 4
+  C             go to state 5
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+
+state 3
+
+
+  $end          shift, and go to state 17
+
+
+state 4
+
+   1) S : LCURLY D _ PIPE C RCURLY
+
+  PIPE          shift, and go to state 18
+
+
+state 5
+
+   2) S : LCURLY C _ RCURLY
+  15) C : C _ SEMICOLON C
+
+  RCURLY        shift, and go to state 19
+  SEMICOLON     shift, and go to state 20
+
+
+state 6
+
+   3) D : PERCENTAGE _ I
+
+  ID            shift, and go to state 22
+
+  I             go to state 21
+
+state 7
+
+   4) D : EXCLAMATIONMARK _ I
+
+  ID            shift, and go to state 22
+
+  I             go to state 23
+
+state 8
+
+   5) D : AT _ I
+
+  ID            shift, and go to state 22
+
+  I             go to state 24
+
+state 9
+
+   9) C : ID _ EQUALS E
+
+  EQUALS        shift, and go to state 25
+
+
+state 10
+
+  10) C : S _
+
+  $default      reduce using rule 10 (C)
+
+
+state 11
+
+  11) C : READ _ ID
+
+  ID            shift, and go to state 26
+
+
+state 12
+
+  12) C : WRITE _ ID
+
+  ID            shift, and go to state 27
+
+
+state 13
+
+  13) C : Cond _
+
+  $default      reduce using rule 13 (C)
+
+
+state 14
+
+  14) C : It _
+
+  $default      reduce using rule 14 (C)
+
+
+state 15
+
+  16) Cond : LPARENTHESIS _ E QUESTIONMARK C RPARENTHESIS
+  17) Cond : LPARENTHESIS _ E QUESTIONMARK C COLON C RPARENTHESIS
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 28
+
+state 16
+
+  18) It : LSQUARE _ E PIPE C RSQUARE
+  19) It : LSQUARE _ E DOUBLEDOT E PIPE C RSQUARE
+  20) It : LSQUARE _ ID COLON E DOUBLEDOT E PIPE C RSQUARE
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 39
+  NUM           shift, and go to state 30
+
+  E             go to state 38
+
+state 17
+
+
+  $default      accept
+
+
+state 18
+
+   1) S : LCURLY D PIPE _ C RCURLY
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  C             go to state 40
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+
+state 19
+
+   2) S : LCURLY C RCURLY _
+
+  $default      reduce using rule 2 (S)
+
+
+state 20
+
+  15) C : C SEMICOLON _ C
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 41
+
+state 21
+
+   3) D : PERCENTAGE I _
+
+  $default      reduce using rule 3 (D)
+
+
+state 22
+
+   6) I : ID _ I
+   7) I : ID _ D
+   8) I : ID _
+
+  PERCENTAGE    shift, and go to state 6
+  EXCLAMATIONMARK  shift, and go to state 7
+  AT            shift, and go to state 8
+  ID            shift, and go to state 22
+  $default      reduce using rule 8 (I)
+
+  I             go to state 42
+  D             go to state 43
+
+state 23
+
+   4) D : EXCLAMATIONMARK I _
+
+  $default      reduce using rule 4 (D)
+
+
+state 24
+
+   5) D : AT I _
+
+  $default      reduce using rule 5 (D)
+
+
+state 25
+
+   9) C : ID EQUALS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 44
+
+state 26
+
+  11) C : READ ID _
+
+  $default      reduce using rule 11 (C)
+
+
+state 27
+
+  12) C : WRITE ID _
+
+  $default      reduce using rule 12 (C)
+
+
+state 28
+
+  16) Cond : LPARENTHESIS E _ QUESTIONMARK C RPARENTHESIS
+  17) Cond : LPARENTHESIS E _ QUESTIONMARK C COLON C RPARENTHESIS
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  QUESTIONMARK  shift, and go to state 45
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 29
+
+  21) E : ID _
+
+  $default      reduce using rule 21 (E)
+
+
+state 30
+
+  22) E : NUM _
+
+  $default      reduce using rule 22 (E)
+
+
+state 31
+
+  28) E : MINUS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 63
+
+state 32
+
+  29) E : LPARENTHESIS _ E RPARENTHESIS
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 64
+
+state 33
+
+  33) E : TRUE _
+
+  $default      reduce using rule 33 (E)
+
+
+state 34
+
+  34) E : FALSE _
+
+  $default      reduce using rule 34 (E)
+
+
+state 35
+
+  43) E : DOLLAR _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 65
+
+state 36
+
+  45) E : CANVAS _
+
+  $default      reduce using rule 45 (E)
+
+
+state 37
+
+  46) E : EMPTYCANVAS _
+
+  $default      reduce using rule 46 (E)
+
+
+state 38
+
+  18) It : LSQUARE E _ PIPE C RSQUARE
+  19) It : LSQUARE E _ DOUBLEDOT E PIPE C RSQUARE
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PIPE          shift, and go to state 66
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  DOUBLEDOT     shift, and go to state 67
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 39
+
+  20) It : LSQUARE ID _ COLON E DOUBLEDOT E PIPE C RSQUARE
+  21) E : ID _
+
+  COLON         shift, and go to state 68
+  $default      reduce using rule 21 (E)
+
+
+state 40
+
+   1) S : LCURLY D PIPE C _ RCURLY
+  15) C : C _ SEMICOLON C
+
+  RCURLY        shift, and go to state 69
+  SEMICOLON     shift, and go to state 20
+
+
+state 41
+
+  15) C : C _ SEMICOLON C
+  15) C : C SEMICOLON C _
+
+  SEMICOLON     error
+  $default      reduce using rule 15 (C)
+
+
+state 42
+
+   6) I : ID I _
+
+  $default      reduce using rule 6 (I)
+
+
+state 43
+
+   7) I : ID D _
+
+  $default      reduce using rule 7 (I)
+
+
+state 44
+
+   9) C : ID EQUALS E _
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+  $default      reduce using rule 9 (C)
+
+
+state 45
+
+  16) Cond : LPARENTHESIS E QUESTIONMARK _ C RPARENTHESIS
+  17) Cond : LPARENTHESIS E QUESTIONMARK _ C COLON C RPARENTHESIS
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 70
+
+state 46
+
+  23) E : E PLUS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 71
+
+state 47
+
+  24) E : E MINUS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 72
+
+state 48
+
+  25) E : E TIMES _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 73
+
+state 49
+
+  26) E : E DIVIDE _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 74
+
+state 50
+
+  27) E : E PERCENTAGE _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 75
+
+state 51
+
+  30) E : E AND _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 76
+
+state 52
+
+  31) E : E OR _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 77
+
+state 53
+
+  32) E : E NOT _
+
+  $default      reduce using rule 32 (E)
+
+
+state 54
+
+  35) E : E LESS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 78
+
+state 55
+
+  36) E : E LESSEQUAL _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 79
+
+state 56
+
+  37) E : E GREATER _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 80
+
+state 57
+
+  38) E : E GREATEREQUAL _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 81
+
+state 58
+
+  39) E : E EQUALS _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 82
+
+state 59
+
+  40) E : E NOTEQUAL _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 83
+
+state 60
+
+  41) E : E AMPERSAND _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 84
+
+state 61
+
+  42) E : E TILDE _ E
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 85
+
+state 62
+
+  44) E : E APOSTROPHE _
+
+  $default      reduce using rule 44 (E)
+
+
+state 63
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  28) E : MINUS E _
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 28 (E)
+
+
+state 64
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  29) E : LPARENTHESIS E _ RPARENTHESIS
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  RPARENTHESIS  shift, and go to state 86
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 65
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  43) E : DOLLAR E _
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  APOSTROPHE    shift, and go to state 62
+  $default      reduce using rule 43 (E)
+
+
+state 66
+
+  18) It : LSQUARE E PIPE _ C RSQUARE
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 87
+
+state 67
+
+  19) It : LSQUARE E DOUBLEDOT _ E PIPE C RSQUARE
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 88
+
+state 68
+
+  20) It : LSQUARE ID COLON _ E DOUBLEDOT E PIPE C RSQUARE
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 89
+
+state 69
+
+   1) S : LCURLY D PIPE C RCURLY _
+
+  $default      reduce using rule 1 (S)
+
+
+state 70
+
+  15) C : C _ SEMICOLON C
+  16) Cond : LPARENTHESIS E QUESTIONMARK C _ RPARENTHESIS
+  17) Cond : LPARENTHESIS E QUESTIONMARK C _ COLON C RPARENTHESIS
+
+  SEMICOLON     shift, and go to state 20
+  RPARENTHESIS  shift, and go to state 90
+  COLON         shift, and go to state 91
+
+
+state 71
+
+  23) E : E _ PLUS E
+  23) E : E PLUS E _
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 23 (E)
+
+
+state 72
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  24) E : E MINUS E _
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 24 (E)
+
+
+state 73
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  25) E : E TIMES E _
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 25 (E)
+
+
+state 74
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  26) E : E DIVIDE E _
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 26 (E)
+
+
+state 75
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  27) E : E PERCENTAGE E _
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 27 (E)
+
+
+state 76
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  30) E : E AND E _
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 30 (E)
+
+
+state 77
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  31) E : E OR E _
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  $default      reduce using rule 31 (E)
+
+
+state 78
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  35) E : E LESS E _
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  NOTEQUAL      shift, and go to state 59
+  LESS          error
+  LESSEQUAL     error
+  GREATER       error
+  GREATEREQUAL  error
+  $default      reduce using rule 35 (E)
+
+
+state 79
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  36) E : E LESSEQUAL E _
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  NOTEQUAL      shift, and go to state 59
+  LESS          error
+  LESSEQUAL     error
+  GREATER       error
+  GREATEREQUAL  error
+  $default      reduce using rule 36 (E)
+
+
+state 80
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  37) E : E GREATER E _
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  NOTEQUAL      shift, and go to state 59
+  LESS          error
+  LESSEQUAL     error
+  GREATER       error
+  GREATEREQUAL  error
+  $default      reduce using rule 37 (E)
+
+
+state 81
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  38) E : E GREATEREQUAL E _
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        shift, and go to state 58
+  NOTEQUAL      shift, and go to state 59
+  LESS          error
+  LESSEQUAL     error
+  GREATER       error
+  GREATEREQUAL  error
+  $default      reduce using rule 38 (E)
+
+
+state 82
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  39) E : E EQUALS E _
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        error
+  NOTEQUAL      error
+  $default      reduce using rule 39 (E)
+
+
+state 83
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  40) E : E NOTEQUAL E _
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  EQUALS        error
+  NOTEQUAL      error
+  $default      reduce using rule 40 (E)
+
+
+state 84
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  41) E : E AMPERSAND E _
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  APOSTROPHE    shift, and go to state 62
+  $default      reduce using rule 41 (E)
+
+
+state 85
+
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  42) E : E TILDE E _
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  APOSTROPHE    shift, and go to state 62
+  $default      reduce using rule 42 (E)
+
+
+state 86
+
+  29) E : LPARENTHESIS E RPARENTHESIS _
+
+  $default      reduce using rule 29 (E)
+
+
+state 87
+
+  15) C : C _ SEMICOLON C
+  18) It : LSQUARE E PIPE C _ RSQUARE
+
+  SEMICOLON     shift, and go to state 20
+  RSQUARE       shift, and go to state 92
+
+
+state 88
+
+  19) It : LSQUARE E DOUBLEDOT E _ PIPE C RSQUARE
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PIPE          shift, and go to state 93
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 89
+
+  20) It : LSQUARE ID COLON E _ DOUBLEDOT E PIPE C RSQUARE
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  DOUBLEDOT     shift, and go to state 94
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 90
+
+  16) Cond : LPARENTHESIS E QUESTIONMARK C RPARENTHESIS _
+
+  $default      reduce using rule 16 (Cond)
+
+
+state 91
+
+  17) Cond : LPARENTHESIS E QUESTIONMARK C COLON _ C RPARENTHESIS
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 95
+
+state 92
+
+  18) It : LSQUARE E PIPE C RSQUARE _
+
+  $default      reduce using rule 18 (It)
+
+
+state 93
+
+  19) It : LSQUARE E DOUBLEDOT E PIPE _ C RSQUARE
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 96
+
+state 94
+
+  20) It : LSQUARE ID COLON E DOUBLEDOT _ E PIPE C RSQUARE
+
+  LPARENTHESIS  shift, and go to state 32
+  MINUS         shift, and go to state 31
+  TRUE          shift, and go to state 33
+  FALSE         shift, and go to state 34
+  DOLLAR        shift, and go to state 35
+  CANVAS        shift, and go to state 36
+  EMPTYCANVAS   shift, and go to state 37
+  ID            shift, and go to state 29
+  NUM           shift, and go to state 30
+
+  E             go to state 97
+
+state 95
+
+  15) C : C _ SEMICOLON C
+  17) Cond : LPARENTHESIS E QUESTIONMARK C COLON C _ RPARENTHESIS
+
+  SEMICOLON     shift, and go to state 20
+  RPARENTHESIS  shift, and go to state 98
+
+
+state 96
+
+  15) C : C _ SEMICOLON C
+  19) It : LSQUARE E DOUBLEDOT E PIPE C _ RSQUARE
+
+  SEMICOLON     shift, and go to state 20
+  RSQUARE       shift, and go to state 99
+
+
+state 97
+
+  20) It : LSQUARE ID COLON E DOUBLEDOT E _ PIPE C RSQUARE
+  23) E : E _ PLUS E
+  24) E : E _ MINUS E
+  25) E : E _ TIMES E
+  26) E : E _ DIVIDE E
+  27) E : E _ PERCENTAGE E
+  30) E : E _ AND E
+  31) E : E _ OR E
+  32) E : E _ NOT
+  35) E : E _ LESS E
+  36) E : E _ LESSEQUAL E
+  37) E : E _ GREATER E
+  38) E : E _ GREATEREQUAL E
+  39) E : E _ EQUALS E
+  40) E : E _ NOTEQUAL E
+  41) E : E _ AMPERSAND E
+  42) E : E _ TILDE E
+  44) E : E _ APOSTROPHE
+
+  PIPE          shift, and go to state 100
+  PERCENTAGE    shift, and go to state 50
+  EQUALS        shift, and go to state 58
+  PLUS          shift, and go to state 46
+  MINUS         shift, and go to state 47
+  TIMES         shift, and go to state 48
+  DIVIDE        shift, and go to state 49
+  AND           shift, and go to state 51
+  OR            shift, and go to state 52
+  NOT           shift, and go to state 53
+  LESS          shift, and go to state 54
+  LESSEQUAL     shift, and go to state 55
+  GREATER       shift, and go to state 56
+  GREATEREQUAL  shift, and go to state 57
+  NOTEQUAL      shift, and go to state 59
+  AMPERSAND     shift, and go to state 60
+  TILDE         shift, and go to state 61
+  APOSTROPHE    shift, and go to state 62
+
+
+state 98
+
+  17) Cond : LPARENTHESIS E QUESTIONMARK C COLON C RPARENTHESIS _
+
+  $default      reduce using rule 17 (Cond)
+
+
+state 99
+
+  19) It : LSQUARE E DOUBLEDOT E PIPE C RSQUARE _
+
+  $default      reduce using rule 19 (It)
+
+
+state 100
+
+  20) It : LSQUARE ID COLON E DOUBLEDOT E PIPE _ C RSQUARE
+
+  LCURLY        shift, and go to state 2
+  READ          shift, and go to state 11
+  WRITE         shift, and go to state 12
+  LPARENTHESIS  shift, and go to state 15
+  LSQUARE       shift, and go to state 16
+  ID            shift, and go to state 9
+
+  S             go to state 10
+  Cond          go to state 13
+  It            go to state 14
+  C             go to state 101
+
+state 101
+
+  15) C : C _ SEMICOLON C
+  20) It : LSQUARE ID COLON E DOUBLEDOT E PIPE C _ RSQUARE
+
+  SEMICOLON     shift, and go to state 20
+  RSQUARE       shift, and go to state 102
+
+
+state 102
+
+  20) It : LSQUARE ID COLON E DOUBLEDOT E PIPE C RSQUARE _
+
+  $default      reduce using rule 20 (It)
+

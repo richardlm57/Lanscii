@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+=begin
+
+	@title	Análisis Sintáctico del interpretador para el lenguaje Lanscii
+
+	@author	Richard Lares 11-10508
+	@author	Oscar Guillen 11-11264
+
+	@description Código fuente del análisis sintáctico para el interpretador de Lanscii
+
+=end
+
+require './lexer.rb'
+require './parser.tab.rb'
+
+l=Lexer.new(ARGV[0])
+t=l.matching
+p=Parser.new
+p.parse(t)
