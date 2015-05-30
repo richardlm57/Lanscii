@@ -79,10 +79,6 @@ rule
 
 end
 
----- header----
-
-require './lexer.rb'
-
 ---- inner ----
 
 def parse(t)

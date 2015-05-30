@@ -11,8 +11,8 @@
 
 =end
 
-require './lexer.rb'
-require './parser.tab.rb'
+require './lexer'
+require './parser'
 
 l=Lexer.new(ARGV[0])
 t=l.matching

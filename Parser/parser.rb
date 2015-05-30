@@ -5,13 +5,9 @@
 #
 
 require 'racc/parser.rb'
-
-
-require './lexer.rb'
-
 class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 87)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 83)
 
 def parse(t)
 	@lexer=t
