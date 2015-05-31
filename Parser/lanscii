@@ -11,6 +11,7 @@
 
 =end
 
+require './Class'
 require './lexer'
 require './parser'
 
@@ -19,7 +20,8 @@ if l.matching
 	#print t
 	#puts ""
 	p=Parser.new
-	p.parse(l.get_token)
+	variable=p.parse(l.get_token)
 else
 	puts l.get_token
 end
+variable.to_s

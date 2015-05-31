@@ -7,9 +7,7 @@ token 	LCURLY PIPE RCURLY PERCENTAGE EXCLAMATIONMARK AT EQUALS READ WRITE SEMICO
 
 prechigh
 	left SEMICOLON
-	nonassoc EQUALS NOTEQUAL
-	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL
-	right QUESTIONMARK COLON 
+	right QUESTIONMARK COLON
 	nonassoc UMINUS
 	left TIMES DIVIDE PERCENTAGE
 	left PLUS MINUS
@@ -18,71 +16,74 @@ prechigh
 	left OR
 	nonassoc APOSTROPHE
 	nonassoc DOLLAR
-	left AMPERSAND TILDE	
+	left AMPERSAND TILDE
+	right EQUALS NOTEQUAL
+	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL
+		
 preclow
 
 start PROGRAM
 
 rule
-	PROGRAM	
-		:	LCURLY DECLARE PIPE BODY RCURLY 
-		|	LCURLY BODY RCURLY		
+	PROGRAM
+		:	LCURLY DECLARE PIPE BODY RCURLY		{return PROGRAM_DECLARE_BODY.new(val[1],val[3])}
+		|	LCURLY BODY RCURLY					{return PROGRAM.new(val[1])}
 
 	DECLARE	
-		:	PERCENTAGE INSTR 
-		|	EXCLAMATIONMARK INSTR
-		|	AT INSTR
+		:	PERCENTAGE INSTR					{result = DECLARE_INT.new(val[1])}
+		|	EXCLAMATIONMARK INSTR				{result = DECLARE_BOOL.new(val[1])}
+		|	AT INSTR							{result = DECLARE_LIE.new(val[1])}
 
 	INSTR	
-		:	ID INSTR
-		|	ID DECLARE
-		| 	ID
+		:	ID INSTR							{result = MORE_INST.new(val[0],val[1])}
+		|	ID DECLARE 							{result = INST_DECLARE.new(val[0],val[1])}
+		| 	ID 									{result = INST_ID.new(val[0])}
 
 	BODY 	
-		: 	ID EQUALS EXPR
-		| 	PROGRAM
-		|	READ ID
-		| 	WRITE ID
-		|	COND
-		|	ITER
-		|	BODY SEMICOLON BODY
+		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])}
+		| 	PROGRAM 				{result = BODY.new(val[0])}
+		|	READ ID 				{result = BODY_READ.new(val[1]) }
+		| 	WRITE ID 				{result = BODY_WRITE.new(val[1]) }
+		|	COND					{result = BODY.new(val[0])}
+		|	ITER					{result = BODY.new(val[0])}
+		|	BODY SEMICOLON BODY     {result = BODIES.new(val[0],val[2])}
 
 	COND
-		:	LPARENTHESIS EXPR QUESTIONMARK BODY RPARENTHESIS
-		|	LPARENTHESIS EXPR QUESTIONMARK BODY COLON BODY RPARENTHESIS
+		:	LPARENTHESIS EXPR QUESTIONMARK BODY RPARENTHESIS   {result = IF_THEN.new(val[1],val[3])}
+		|	LPARENTHESIS EXPR QUESTIONMARK BODY COLON BODY RPARENTHESIS   {result = IF_THEN_ELSE.new(val[1],val[3],val[5])}
 
 	ITER	
-		: 	LSQUARE EXPR PIPE BODY RSQUARE
-		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE
-		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE
+		: 	LSQUARE EXPR PIPE BODY RSQUARE       {result = ONE_COND.new(val[1],val[3])}
+		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = COND.new(val[1],val[3],val[5])}
+		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_COND.new(val[1],val[3],val[5],val[7])}
 
 	EXPR	
-		:	ID
-		|	NUM
-		|	EXPR PLUS EXPR
-		|	EXPR MINUS EXPR
-		|	EXPR TIMES EXPR
-		|	EXPR DIVIDE EXPR
-		|	EXPR PERCENTAGE EXPR
+		:	ID 						{result = EXP_ID.new(val[0])}
+		|	NUM						{result = EXP_NUM.new(val[0])}
+		|	EXPR PLUS EXPR          {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR MINUS EXPR         {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR TIMES EXPR         {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR DIVIDE EXPR        {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR PERCENTAGE EXPR    {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
 		|	MINUS EXPR	=UMINUS
-		|	LPARENTHESIS EXPR RPARENTHESIS
-		|	EXPR AND EXPR
-		|	EXPR OR EXPR
-		|	EXPR NOT
-		|	TRUE
-		|	FALSE
-		|	EXPR LESS EXPR
-		|	EXPR LESSEQUAL EXPR
-		|	EXPR GREATER EXPR
-		|	EXPR GREATEREQUAL EXPR
-		|	EXPR EQUALS EXPR
-		|	EXPR NOTEQUAL EXPR
-		|	EXPR AMPERSAND EXPR
-		|	EXPR TILDE EXPR
-		|	DOLLAR EXPR
-		|	EXPR APOSTROPHE
-		|	CANVAS
-		|	EMPTYCANVAS
+		|	LPARENTHESIS EXPR RPARENTHESIS {result = EXPR.new(val[1])}
+		|	EXPR AND EXPR           {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR OR EXPR            {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR NOT                {result = LEFT_EXPR.new(val[0],val[1])}
+		|	TRUE					{result = EXP_BOOL.new(val[0])}
+		|	FALSE					{result = EXP_BOOL.new(val[0])}
+		|	EXPR LESS EXPR          {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR LESSEQUAL EXPR     {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR GREATER EXPR		{result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR GREATEREQUAL EXPR  {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR EQUALS EXPR        {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR NOTEQUAL EXPR      {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR AMPERSAND EXPR     {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	EXPR TILDE EXPR         {result = DOUBLE_EXPR.new(val[0],val[1],val[2])}
+		|	DOLLAR EXPR         	{result = RIGHT_EXPR.new(val[0],val[1])} 
+		|	EXPR APOSTROPHE			{result = LEFT_EXPR.new(val[0],val[1])}
+		|	CANVAS					{result = EXP_CANVAS.new(val[0])}
+		|	EMPTYCANVAS				{result = EXP_CANVAS.new(val[0])}
 
 end
 

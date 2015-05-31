@@ -15,6 +15,16 @@ class Lexer
 	def initialize(f)
 		@file=f
 		@token = nil
+		@strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
+						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
+						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",","=>"COMMA",";"=>"SEMICOLON",
+						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK", "&"=>"AMPERSAND", "~"=>"TILDE",
+						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
+						"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
+						"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESSEQUAL",
+						">"=>"GREATER",">="=>"GREATEREQUAL",
+						"\/="=>"NOTEQUAL","#"=>"EMPTYCANVAS","$"=>"DOLLAR","'"=>"APOSTROPHE","true"=>"TRUE",
+						"false"=>"FALSE"}
 	end
 
 	def get_token
@@ -31,16 +41,6 @@ class Lexer
 
 		# Diccionario de tokens con su identificador
 
-		strings_dic = strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
-						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
-						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",","=>"COMMA",";"=>"SEMICOLON",
-						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK", "&"=>"AMPERSAND", "~"=>"TILDE",
-						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
-						"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
-						"\/\\"=>"AND","\\\/"=>"OR","^"=>"NOT","<"=>"LESS","<="=>"LESSEQUAL",
-						">"=>"GREATER",">="=>"GREATEREQUAL",
-						"\/="=>"NOTEQUAL","#"=>"EMPTYCANVAS","$"=>"DOLLAR","'"=>"APOSTROPHE","true"=>"TRUE",
-						"false"=>"FALSE"}
 
 		correct_program=Array.new	# Arreglo con los strings que se imprimirán cuando un programa es correcto
 		incorrect_program=Array.new	# Arreglo con los strings que se imprimirán cuando un programa es incorrecto
@@ -89,18 +89,18 @@ class Lexer
 							j+=m[0].size
 
 						elsif m[0] =~ /-}/
-							correct_program.push([eval(':'+strings_dic[m[0][0]]),m[0][0]])
+							correct_program.push([eval(':'+@strings_dic[m[0][0]]),m[0][0]])
 							j+=1
-							correct_program.push([eval(':'+strings_dic[m[0][1]]),m[0][1]])
+							correct_program.push([eval(':'+@strings_dic[m[0][1]]),m[0][1]])
 							j+=1
 
 						elsif m[0] =~ /<\/>|<\\>|<\|>|<_>|<->|<\ >/
-							correct_program.push([eval(':'+strings_dic[m[0]]),m[0]])
+							correct_program.push([eval(':'+@strings_dic[m[0]]),m[0]])
 							j+=m[0].size
 
 						elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\[|\]|&|~|
 							|\+|\-|\*|\/|\^|#|,|\$|'|true|false/
-							correct_program.push([eval(':'+strings_dic[m[0]]),m[0]])
+							correct_program.push([eval(':'+@strings_dic[m[0]]),m[0]])
 							j+=m[0].size
 
 						elsif m[0] =~ /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
