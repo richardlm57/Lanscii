@@ -1,3 +1,4 @@
-{ prueba = 5 + (-ID) \/ true;
-	write </>
+{ prueba = (5 + -ID)) * true;
+	write </> + holi;
+	read chao
 }

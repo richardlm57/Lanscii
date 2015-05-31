@@ -106,8 +106,7 @@ class BODY_WRITE
 
 	def to_s
 		puts 'WRITE:'
-		puts '|  VARIABLE:'
-		puts '|  | 	  IDENTIFIER: ' + @id
+		puts @id.to_s
 	end
 end
 
@@ -186,7 +185,7 @@ class EXP_BOOL
 	end
 end
 
-class DOUBLE_EXPR
+class DOUBLE_EXP
 	def initialize(val1,val2,val3)	
 		@expr1 = val1
 		@expr2 = val3
@@ -197,7 +196,7 @@ class DOUBLE_EXPR
 	end
 end
 
-class LEFT_EXPR
+class LEFT_EXP
 	def initialize(val1,val2)	
 		@expr = val1
 		@oper = val2
@@ -207,10 +206,10 @@ class LEFT_EXPR
 	end
 end
 
-class RIGHT_EXPR
+class RIGHT_EXP
 	def initialize(val1,val2)	
-		@expr = val1
-		@oper = val2
+		@expr = val2
+		@oper = val1
 	end
 	def to_s
 		return 'OPERATION: '+@oper.to_s+"\n"+"|  "+@expr.to_s+"\n"

@@ -11,7 +11,7 @@
 
 =end
 
-require './Class'
+require './class'
 require './lexer'
 require './parser'
 
