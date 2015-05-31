@@ -1,8 +1,8 @@
-{- example program \ \¡\¡-}
-  {--} -}
-{ @cake lie !GLaDOS |
-    read lie;
-    cake = <|>;
-    (cake = lie ? GLaDOS = true : glaDos = false);
-    write -1
+{ %foo bar |
+    bar = 3;
+    {- asignar a foo el doble del valor de bar, más treinta y cinco;
+        si bar es mayor a dos -}
+    ( bar > 2 ?
+        foo = 35 + bar * 2
+    )
 }

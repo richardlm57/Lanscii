@@ -15,6 +15,11 @@ require './lexer'
 require './parser'
 
 l=Lexer.new(ARGV[0])
-t=l.matching
-p=Parser.new
-p.parse(t)
+if l.matching
+	#print t
+	#puts ""
+	p=Parser.new
+	p.parse(l.get_token)
+else
+	puts l.get_token
+end

@@ -6,7 +6,7 @@ token 	LCURLY PIPE RCURLY PERCENTAGE EXCLAMATIONMARK AT EQUALS READ WRITE SEMICO
 		APOSTROPHE CANVAS EMPTYCANVAS ID NUM UMINUS
 
 prechigh
-	nonassoc SEMICOLON
+	left SEMICOLON
 	nonassoc EQUALS NOTEQUAL
 	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL
 	right QUESTIONMARK COLON 
@@ -25,7 +25,7 @@ start S
 
 rule
 	S	:	LCURLY D PIPE C RCURLY 
-		|	LCURLY C RCURLY
+		|	LCURLY C RCURLY		
 
 	D	:	PERCENTAGE I 
 		|	EXCLAMATIONMARK I
@@ -86,6 +86,5 @@ def parse(t)
 	do_parse
 end
 def next_token
-	puts @lexer
 	@lexer.shift
 end

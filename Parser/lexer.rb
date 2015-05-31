@@ -11,10 +11,14 @@
 
 =end
 
-
 class Lexer
 	def initialize(f)
 		@file=f
+		@token = nil
+	end
+
+	def get_token
+		return @token
 	end
 
 	def matching
@@ -85,26 +89,26 @@ class Lexer
 							j+=m[0].size
 
 						elsif m[0] =~ /-}/
-							correct_program.push("token "+strings_dic[m[0][0]]+" value ("+m[0][0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':'+strings_dic[m[0][0]]),m[0][0]])
 							j+=1
-							correct_program.push("token "+strings_dic[m[0][1]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':'+strings_dic[m[0][1]]),m[0][1]])
 							j+=1
 
 						elsif m[0] =~ /<\/>|<\\>|<\|>|<_>|<->|<\ >/
-							correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0][1]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':'+strings_dic[m[0]]),m[0]])
 							j+=m[0].size
 
 						elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\[|\]|&|~|
 							|\+|\-|\*|\/|\^|#|,|\$|'|true|false/
-							correct_program.push("token "+strings_dic[m[0]]+" value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':'+strings_dic[m[0]]),m[0]])
 							j+=m[0].size
 
 						elsif m[0] =~ /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
-							correct_program.push("token IDENTIFIER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':ID'),m[0]])
 							j+=m[0].size
 
 						elsif m[0] =~ /[0-9]+/
-							correct_program.push("token NUMBER value ("+m[0]+") at line: "+i.to_s+", column: "+(j+1).to_s)
+							correct_program.push([eval(':NUM'),m[0]])
 							j+=m[0].size
 
 						end
@@ -143,9 +147,11 @@ class Lexer
 			puts "Error: Comment section opened but not closed at line: "+commentR.to_s+", column: "+commentC.to_s 
 		else
 			if incorrect 	# Si el programa es incorrecto, sólo se imprimen los errores del programa
-				return incorrect_program	
+				@token = incorrect_program	
+				return false
 			else			# Si el programa es correcto, se imprimen los símbolos reconocidos
-				return correct_program	
+				@token = correct_program	
+				return true
 			end
 		end
 	end

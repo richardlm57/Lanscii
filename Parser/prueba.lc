@@ -1,0 +1,3 @@
+{ prueba = 5 + (-ID) \/ true;
+	write </>
+}
