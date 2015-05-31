@@ -7,12 +7,13 @@
 require 'racc/parser.rb'
 class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 83)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 90)
 
 def parse(t)
 	@lexer=t
 	do_parse
 end
+
 def next_token
 	@lexer.shift
 end
@@ -257,7 +258,7 @@ racc_reduce_table = [
   2, 46, :_reduce_none,
   2, 46, :_reduce_none,
   1, 46, :_reduce_none,
-  3, 45, :_reduce_9,
+  3, 45, :_reduce_none,
   1, 45, :_reduce_none,
   2, 45, :_reduce_none,
   2, 45, :_reduce_none,
@@ -408,13 +409,13 @@ Racc_token_to_s_table = [
   "NUM",
   "UMINUS",
   "$start",
-  "S",
-  "D",
-  "C",
-  "I",
-  "E",
-  "Cond",
-  "It" ]
+  "PROGRAM",
+  "DECLARE",
+  "BODY",
+  "INSTR",
+  "EXPR",
+  "COND",
+  "ITER" ]
 
 Racc_debug_parser = false
 
@@ -438,12 +439,7 @@ Racc_debug_parser = false
 
 # reduce 8 omitted
 
-module_eval(<<'.,.,', 'parser.y', 37)
-  def _reduce_9(val, _values, result)
-    print val[0]
-    result
-  end
-.,.,
+# reduce 9 omitted
 
 # reduce 10 omitted
 
