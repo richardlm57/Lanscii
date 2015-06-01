@@ -31,14 +31,14 @@ rule
 		|	LCURLY BODY RCURLY					{return PROGRAM_BODY.new(val[1])}
 
 	DECLARE	
-		:	PERCENTAGE INSTR					{result = DECLARE_INT.new(val[1])}
-		|	EXCLAMATIONMARK INSTR				{result = DECLARE_BOOL.new(val[1])}
-		|	AT INSTR							{result = DECLARE_LIE.new(val[1])}
+		:	PERCENTAGE IDENTS					{result = DECLARE_INT.new(val[1])}
+		|	EXCLAMATIONMARK IDENTS				{result = DECLARE_BOOL.new(val[1])}
+		|	AT IDENTS							{result = DECLARE_LIE.new(val[1])}
 
-	INSTR	
-		:	ID INSTR							{result = MORE_INST.new(val[0],val[1])}
-		|	ID DECLARE 							{result = INST_DECLARE.new(val[0],val[1])}
-		| 	ID 									{result = INST_ID.new(val[0])}
+	IDENTS	
+		:	ID IDENTS							{result = MORE_IDENTS.new(val[0],val[1])}
+		|	ID DECLARE 							{result = IDENTS_DECLARE.new(val[0],val[1])}
+		| 	ID 									{result = IDENTS_ID.new(val[0])}
 
 	BODY 	
 		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])}
@@ -54,9 +54,9 @@ rule
 		|	LPARENTHESIS EXPR QUESTIONMARK BODY COLON BODY RPARENTHESIS   {result = IF_THEN_ELSE.new(val[1],val[3],val[5])}
 
 	ITER	
-		: 	LSQUARE EXPR PIPE BODY RSQUARE       {result = ONE_COND.new(val[1],val[3])}
-		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = COND.new(val[1],val[3],val[5])}
-		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_COND.new(val[1],val[3],val[5],val[7])}
+		: 	LSQUARE EXPR PIPE BODY RSQUARE       {result = ONE_COND_ITER.new(val[1],val[3])}
+		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ITER.new(val[1],val[3],val[5])}
+		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_ITER.new(val[1],val[3],val[5],val[7])}
 
 	EXPR	
 		:	ID 						{result = EXP_ID.new(val[0])}

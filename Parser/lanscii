@@ -24,4 +24,4 @@ if l.matching
 else
 	puts l.get_token
 end
-variable.to_s
+variable.to_s(0)
