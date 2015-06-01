@@ -16,7 +16,7 @@ class SyntacticError < RuntimeError
   end
 
   def to_s
-    "Error sintactico del token '#{@token}'"   
+    "Lanscii Parsing Error: Syntactic error of token '#{@token}'"   
   end
 end
 
