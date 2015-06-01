@@ -1,10 +1,16 @@
+# Archivo con la sintaxis del parser en RACC
+# Richard Lares 11-10508
+# Oscar Guillén 11-11264
+
 class Parser
 
+# Símbolos terminales de la gramática
 token 	LCURLY PIPE RCURLY PERCENTAGE EXCLAMATIONMARK AT EQUALS READ WRITE SEMICOLON 
 		LPARENTHESIS QUESTIONMARK RPARENTHESIS COLON LSQUARE RSQUARE DOUBLEDOT PLUS MINUS TIMES DIVIDE 
 		AND OR NOT TRUE FALSE LESS LESSEQUAL GREATER GREATEREQUAL NOTEQUAL AMPERSAND TILDE DOLLAR 
 		APOSTROPHE CANVAS EMPTYCANVAS ID NUM UMINUS PARENTHESIS
 
+# Precedencias de los símbolos
 prechigh
 	nonassoc PARENTHESIS
 	left SEMICOLON
@@ -19,27 +25,31 @@ prechigh
 	nonassoc DOLLAR
 	left AMPERSAND TILDE
 	right EQUALS NOTEQUAL
-	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL
-		
+	nonassoc LESS LESSEQUAL GREATER GREATEREQUAL		
 preclow
 
+# Símbolo inicial
 start PROGRAM
 
+# Reglas de la gramática
 rule
 	PROGRAM
 		:	LCURLY DECLARE PIPE BODY RCURLY		{return PROGRAM_DECLARE_BODY.new(val[1],val[3])}
 		|	LCURLY BODY RCURLY					{return PROGRAM_BODY.new(val[1])}
 
+		# Tipos de las declaraciones
 	DECLARE	
 		:	PERCENTAGE INSTR					{result = DECLARE_INT.new(val[1])}
 		|	EXCLAMATIONMARK INSTR				{result = DECLARE_BOOL.new(val[1])}
 		|	AT INSTR							{result = DECLARE_LIE.new(val[1])}
 
+		# Maneras de declarar
 	INSTR	
 		:	ID INSTR							{result = MORE_INST.new(val[0],val[1])}
 		|	ID DECLARE 							{result = INST_DECLARE.new(val[0],val[1])}
 		| 	ID 									{result = INST_ID.new(val[0])}
 
+		# Cuerpo del programa / Instrucciones
 	BODY 	
 		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])}
 		| 	PROGRAM 				{result = BODY.new(val[0])}
@@ -49,15 +59,18 @@ rule
 		|	ITER					{result = BODY.new(val[0])}
 		|	BODY SEMICOLON BODY     {result = BODIES.new(val[0],val[2])}
 
+		# Condicionales
 	COND
 		:	LPARENTHESIS EXPR QUESTIONMARK BODY RPARENTHESIS   {result = IF_THEN.new(val[1],val[3])}
 		|	LPARENTHESIS EXPR QUESTIONMARK BODY COLON BODY RPARENTHESIS   {result = IF_THEN_ELSE.new(val[1],val[3],val[5])}
 
+		# Ciclos
 	ITER	
 		: 	LSQUARE EXPR PIPE BODY RSQUARE       {result = ONE_COND.new(val[1],val[3])}
 		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = COND.new(val[1],val[3],val[5])}
 		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_COND.new(val[1],val[3],val[5],val[7])}
 
+		# Expresiones
 	EXPR	
 		:	ID 						{result = EXP_ID.new(val[0])}
 		|	NUM						{result = EXP_NUM.new(val[0])}

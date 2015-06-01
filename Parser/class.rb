@@ -1,7 +1,15 @@
-######################################
-# Declaracion de CLASES para TOKENS
-######################################
+=begin
 
+	@title	Clases para las producciones del parser de Lanscii
+
+	@author	Richard Lares 11-10508
+	@author	Oscar Guillen 11-11264
+
+	@description Declaración de clases (árboles) para las producciones del parser
+
+=end
+
+# Símbolo inicial con declaraciones de variables
 class PROGRAM_DECLARE_BODY
 	def initialize(val1,val2)
 		@declare = val1
@@ -13,6 +21,7 @@ class PROGRAM_DECLARE_BODY
 	end
 end
 
+# Símbolo inicial sin declaraciones de variables
 class PROGRAM_BODY
 	def initialize(val1)
 		@body = val1
@@ -23,24 +32,28 @@ class PROGRAM_BODY
 	end
 end
 
+# Declaración de enteros
 class DECLARE_INT
 	def initialize(val)
 		@inst = val
 	end
 end
 
+# Declaración de booleanos
 class DECLARE_BOOL
 	def initialize(val)
 		@inst = val
 	end
 end
 
+# Declaración de lienzos
 class DECLARE_LIE
 	def initialize(val)
 		@inst = val
 	end
 end
 
+# Más identificadores dentro de una declaración
 class MORE_INST
 	def initialize(val1,val2)
 		@id = val1
@@ -48,6 +61,7 @@ class MORE_INST
 	end
 end
 
+# Otra declaración de variable
 class INST_DECLARE
 	def initialize(val1,val2)
 		@id = val1
@@ -55,12 +69,14 @@ class INST_DECLARE
 	end
 end
 
+# Única declaración de variable
 class INST_ID
 	def initialize(val1)
 		@id = val1
 	end
 end
 
+# Asignación
 class BODY_ASSIGN
 
 	def initialize(val1,val2)
@@ -77,6 +93,7 @@ class BODY_ASSIGN
 	end
 end
 
+# Otro cuerpo
 class BODY
 	def initialize(val1)
 		@body = val1
@@ -87,6 +104,7 @@ class BODY
 	end
 end
 
+# Read
 class BODY_READ
 	def initialize(val1)
 		@id = val1
@@ -99,6 +117,7 @@ class BODY_READ
 	end
 end
 
+# Write
 class BODY_WRITE
 	def initialize(val1)
 		@id = val1
@@ -110,6 +129,7 @@ class BODY_WRITE
 	end
 end
 
+# Secuenciación
 class BODIES
 	def initialize(val1,val2)
 		@body1 = val1
@@ -121,6 +141,7 @@ class BODIES
 	end
 end
 
+# Condicional simple
 class IF_THEN
 	def initialize(val1,val2)
 		@exp = val1
@@ -134,6 +155,7 @@ class IF_THEN
 	end
 end
 
+# Condicional doble
 class IF_THEN_ELSE
 	def initialize(val1,val2,val3)
 		@exp = val1
@@ -150,6 +172,7 @@ class IF_THEN_ELSE
 	end
 end
 
+# Expresión
 class EXP
 	def initialize(val)
 		@exp = val
@@ -158,6 +181,8 @@ class EXP
 		return @exp.to_s
 	end
 end
+
+# Identificador de variable
 class EXP_ID
 	def initialize(val)
 		@id = val
@@ -167,6 +192,7 @@ class EXP_ID
 	end
 end
 
+# Constante numérica
 class EXP_NUM
 	def initialize(val)	
 		@value = val
@@ -176,6 +202,7 @@ class EXP_NUM
 	end
 end
 
+# Expresión booleana
 class EXP_BOOL
 	def initialize(val)	
 		@value = val
@@ -185,6 +212,7 @@ class EXP_BOOL
 	end
 end
 
+# Expresiones binarias
 class DOUBLE_EXP
 	def initialize(val1,val2,val3)	
 		@expr1 = val1
@@ -196,6 +224,7 @@ class DOUBLE_EXP
 	end
 end
 
+# Expresiones unarias con subexpresión a la izquierda (operador a la derecha)
 class LEFT_EXP
 	def initialize(val1,val2)	
 		@expr = val1
@@ -206,6 +235,7 @@ class LEFT_EXP
 	end
 end
 
+# Expresiones unarias con subexpresión a la derecha (operador a la izquierda)
 class RIGHT_EXP
 	def initialize(val1,val2)	
 		@expr = val2
@@ -216,6 +246,7 @@ class RIGHT_EXP
 	end
 end
 
+# Iteración con una expresión
 class ONE_COND
 	def initialize(val1,val2)
 		@expr = val1
@@ -229,6 +260,7 @@ class ONE_COND
 	end
 end
 
+# Iteración con dos expresiones
 class COND
 	def initialize(val1,val2,val3)
 		@expr1 = val1
@@ -244,6 +276,7 @@ class COND
 	end
 end
 
+# Iteración con contador
 class ID_COND
 	def initialize(val1,val2,val3,val4)
 		@id = val1
@@ -261,6 +294,7 @@ class ID_COND
 	end
 end
 
+# Expresiones de tipo lienzo
 class EXP_CANVAS
 	def initialize(val)
 		@canvas = val

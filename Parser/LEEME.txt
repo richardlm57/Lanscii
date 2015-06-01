@@ -1,0 +1,51 @@
+Universidad Simón Bolívar
+Departamento de Computación y Tecnología de la Información
+CI3725 - Traductores e Interpretadores
+
+LEEME.txt
+
+Autores: Richard Lares 11-10508
+		 Oscar Guillen 11-11264
+
+	Decisiones de implementación
+
+Para el analizador sintáctico del lenguaje Lanscii se definieron las clases
+Lexer y Parser, donde un objeto de la clase Lexer se encarga de realizar el
+análisis lexicográfico del lenguaje y almacena los tokens en uno de sus atributos.
+Luego, un objeto de la clase Parser recibe este arreglo y realiza el análisis
+sintáctico del lenguaje. Todo esto se hace desde un main que imprime el árbol
+sintáctico correspondiente, en caso que no hubiese ningún error; en caso de haber
+algún error lexicográfico se imprime, y si no hay de estos errores pero hay erroes
+sintácticos, se imprime el primer error sintáctico encontrado (por parte de la
+herramienta). El parser fue construido con RACC, una herramienta de parseo para
+Ruby. Esta herramienta recibe un arreglo de tuplas, cuyo primer elemento es el
+símbolo para el token encontrado (símbolo de Ruby, :SYMBOL), y segundo elemento
+es el valor del token. RACC también permite definir las reglas para la gramática 
+que reconoce el lenguaje Lanscii, incluyendo los símbolos terminales y la precedencia
+y asociación de los mismos. Esta herramienta funciona con dos métodos que fueron
+definidos: do_parse y next_token, usado por do_parse para desplazarse por el arreglo
+de tokens. Para construir el árbol sintáctico se definieron clases para cada 
+producción de la grámatica, construyendo el árbol de manera recursiva a medida
+que el parser reconoce los tokens. Cada clase tiene un nombre y cantidad de atributos
+dependiendo de los símbolos (terminales y no terminales) implicados en dicha producción.
+
+	Estado actual del proyecto
+
+Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos 
+archivos y el analizador sintáctico funcionó sin ningún inconveniente. Se pedía 
+que, en caso de no haber errores lexicográficos, se imprimiera el primer error
+sintáctico que encontrar el parser (libertad de formato); en base a esto no se 
+modificó la salida que brinda la herramienta de parseo (RACC) debido a que imprime
+(con su formato) el primer error sintáctico encontrado y luego aborta, como se 
+indica en el enunciado.
+
+
+	Problemas presentes
+
+	Cualquier comentario respecto al proyecto que consideren necesario
+
+Se tenía pensado crear una clase Token para poder almacenar el símbolo, el valor 
+del token y la fila y columna donde fue encontrado, sin embargo no se encontró 
+la forma de que RACC no tuviera problema con recibir un arreglo con elementos de
+esta clase, por esta razón en el lexer se construye el arreglo de tokens de la 
+forma en la que se hizo y no usando la clase token que se quería usar.

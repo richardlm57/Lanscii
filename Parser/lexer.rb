@@ -11,13 +11,13 @@
 
 =end
 
-class Lexer
+class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un archivo
 	def initialize(f)
 		@file=f
 		@token = nil
 		@strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
 						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
-						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",","=>"COMMA",";"=>"SEMICOLON",
+						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",";"=>"SEMICOLON",
 						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK", "&"=>"AMPERSAND", "~"=>"TILDE",
 						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
 						"+"=>"PLUS","-"=>"MINUS","*"=>"TIMES","/"=>"DIVIDE",
@@ -27,11 +27,11 @@ class Lexer
 						"false"=>"FALSE"}
 	end
 
-	def get_token
+	def get_token	# Retorna el arreglo de tokens (o errores lexicográficos)
 		return @token
 	end
 
-	def matching
+	def matching	# Procedimiento de análisis lexicográfico
 
 		# Lectura del contenido del archivo de entrada
 
@@ -51,7 +51,7 @@ class Lexer
 		varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|\.\.|
 				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|\[|\]|&|~|
-				|#|,|\$|'|true|false/ 	# Expresión regular para reconocer las palabras reservadas de LANSCII
+				|#|\$|'|true|false/ 	# Expresión regular para reconocer las palabras reservadas de LANSCII
 		i=1		# Contador de línea
 
 		content.each_line do |x|	# Se itera por las líneas del archivo reconociendo símbolos (o errores)
@@ -99,7 +99,7 @@ class Lexer
 							j+=m[0].size
 
 						elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\[|\]|&|~|
-							|\+|\-|\*|\/|\^|#|,|\$|'|true|false/
+							|\+|\-|\*|\/|\^|#|\$|'|true|false/
 							correct_program.push([eval(':'+@strings_dic[m[0]]),m[0]])
 							j+=m[0].size
 
@@ -146,10 +146,10 @@ class Lexer
 		if comment 	# Error si hubo un comentario abierto que nunca fue cerrado
 			puts "Error: Comment section opened but not closed at line: "+commentR.to_s+", column: "+commentC.to_s 
 		else
-			if incorrect 	# Si el programa es incorrecto, sólo se imprimen los errores del programa
+			if incorrect 	# Si el programa es incorrecto, se asignan los errores lexicográficos
 				@token = incorrect_program	
 				return false
-			else			# Si el programa es correcto, se imprimen los símbolos reconocidos
+			else			# Si el programa es correcto, se asignan los tokens
 				@token = correct_program	
 				return true
 			end

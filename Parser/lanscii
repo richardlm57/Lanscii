@@ -15,13 +15,15 @@ require './class'
 require './lexer'
 require './parser'
 
-l=Lexer.new(ARGV[0])
-if l.matching
-	#print t
-	#puts ""
-	p=Parser.new
-	variable=p.parse(l.get_token)
-else
+l=Lexer.new(ARGV[0]) 				# Se crea el lexer
+
+if l.matching						# Si no hubo errores lexicográficos, 
+									# se procede con el análisis sintáctico del archivo
+									
+	p=Parser.new					# Se crea el parser
+	variable=p.parse(l.get_token)	# Se parsea el arreglo de tokens
+	variable.to_s					# Se imprime el árbol generado por el parser
+
+else								# Si hubo errores lexicográficos, se imprimen
 	puts l.get_token
 end
-variable.to_s
