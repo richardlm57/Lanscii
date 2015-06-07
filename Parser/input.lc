@@ -7,6 +7,6 @@
     ( bar > 2 ?
         foo = 35 + bar * 2
     );
-
+    e=$hola~chao;
     [foo > 2 | foo = 33]
 }

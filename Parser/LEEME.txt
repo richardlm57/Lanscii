@@ -34,15 +34,22 @@ dependiendo de los símbolos (terminales y no terminales) implicados en dicha pr
 Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos 
 archivos y el analizador sintáctico funcionó sin ningún inconveniente. Se pedía 
 que, en caso de no haber errores lexicográficos, se imprimiera el primer error
-sintáctico que encontrar el parser (libertad de formato); en base a esto no se 
-modificó la salida que brinda la herramienta de parseo (RACC) debido a que imprime
+sintáctico que encontrar el parser (libertad de formato). En base a esto, se modificó 
+ligeramente la salida que brinda la herramienta de parseo (RACC) debido a que imprime
 (con su formato) el primer error sintáctico encontrado y luego aborta, como se 
-indica en el enunciado.
+indica en el enunciado; en este caso se modificó la función on_error para agregar una
+línea al error arrojado.
 
 
 	Problemas presentes
 
+
 	Cualquier comentario respecto al proyecto que consideren necesario
+
+Debido a que en el main se tiene la línea " require './parser' " para generar el parser 
+con RACC, se debe ejecutar el comando:
+
+$> racc -o parser.rb parser.y
 
 Se tenía pensado crear una clase Token para poder almacenar el símbolo, el valor 
 del token y la fila y columna donde fue encontrado, sin embargo no se encontró 
