@@ -8,6 +8,8 @@
 	@description Declaración de clases (árboles) para las producciones del parser
 
 =end
+require './simboltable'
+$t=SymbolTable.new
 
 # Funcion para imprimir pipes.
 def print_pipe(pipe)
@@ -21,6 +23,11 @@ class PROGRAM_DECLARE_BODY
 	def initialize(val1,val2)
 		@declare = val1
 		@body = val2
+		@table = $t
+	end
+
+	def check
+
 	end
 
 	def to_s(pipe)
@@ -32,6 +39,10 @@ end
 class PROGRAM_BODY
 	def initialize(val1)
 		@body = val1
+		@table = $t
+	end
+
+	def check()
 	end
 
 	def to_s(pipe)
@@ -43,6 +54,7 @@ end
 class DECLARE_INT
 	def initialize(val)
 		@inst = val
+		$t.insert(val.get_id,:INT)
 	end
 end
 
@@ -50,6 +62,8 @@ end
 class DECLARE_BOOL
 	def initialize(val)
 		@inst = val
+		$t.insert(val.get_id,:BOOL)
+
 	end
 end
 
@@ -57,6 +71,7 @@ end
 class DECLARE_LIE
 	def initialize(val)
 		@inst = val
+		$t.insert(val.get_id,:CANV)
 	end
 end
 
@@ -66,6 +81,9 @@ class MORE_IDENTS
 		@id = val1
 		@next_inst = val2
 	end
+	def get_id
+		return @id
+	end
 end
 
 # Otra declaración de variable
@@ -74,12 +92,18 @@ class IDENTS_DECLARE
 		@id = val1
 		@declare = val2
 	end
+	def get_id
+		return @id
+	end
 end
 
 # Única declaración de variable
 class IDENTS_ID
 	def initialize(val1)
 		@id = val1
+	end
+	def get_id
+		return @id
 	end
 end
 

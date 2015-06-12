@@ -5,9 +5,14 @@
 #
 
 require 'racc/parser.rb'
+
+
+require './symboltable'
+
+
 class Parser < Racc::Parser
 
-module_eval(<<'...end parser.y/module_eval...', 'parser.y', 105)
+module_eval(<<'...end parser.y/module_eval...', 'parser.y', 130)
 
 # Clase para los errores sintácticos
 class SyntacticError < RuntimeError
@@ -456,319 +461,339 @@ Racc_debug_parser = false
 module_eval(<<'.,.,', 'parser.y', 36)
   def _reduce_1(val, _values, result)
     return PROGRAM_DECLARE_BODY.new(val[1],val[3])
+												a=SymbolTable.new
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 37)
+module_eval(<<'.,.,', 'parser.y', 38)
   def _reduce_2(val, _values, result)
     return PROGRAM_BODY.new(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 41)
+module_eval(<<'.,.,', 'parser.y', 42)
   def _reduce_3(val, _values, result)
     result = DECLARE_INT.new(val[1])
+												a.insert(val[1].get_id,:INT)
+												
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 42)
+module_eval(<<'.,.,', 'parser.y', 45)
   def _reduce_4(val, _values, result)
     result = DECLARE_BOOL.new(val[1])
+												a.insert(val[1].get_id,:BOOL)
+												
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 43)
+module_eval(<<'.,.,', 'parser.y', 48)
   def _reduce_5(val, _values, result)
     result = DECLARE_LIE.new(val[1])
+												a.insert(val[1].get_id,:CANV)
+												
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 47)
+module_eval(<<'.,.,', 'parser.y', 54)
   def _reduce_6(val, _values, result)
     result = MORE_IDENTS.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 48)
+module_eval(<<'.,.,', 'parser.y', 55)
   def _reduce_7(val, _values, result)
     result = IDENTS_DECLARE.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 49)
+module_eval(<<'.,.,', 'parser.y', 56)
   def _reduce_8(val, _values, result)
     result = IDENTS_ID.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 53)
+module_eval(<<'.,.,', 'parser.y', 60)
   def _reduce_9(val, _values, result)
     result = BODY_ASSIGN.new(val[0],val[2])
+									tmp=a.lookup(val[0])
+									puts "sexo"
+									
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 54)
+module_eval(<<'.,.,', 'parser.y', 64)
   def _reduce_10(val, _values, result)
     result = BODY.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 55)
+module_eval(<<'.,.,', 'parser.y', 65)
   def _reduce_11(val, _values, result)
-    result = BODY_READ.new(val[1]) 
+    result = BODY_READ.new(val[1])
+									if a.lookup(val[1])==nil
+										puts "ERROR LEVE"
+									end
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 56)
+module_eval(<<'.,.,', 'parser.y', 69)
   def _reduce_12(val, _values, result)
     result = BODY_WRITE.new(val[1]) 
+									if a.lookup(val[1].get_id)==nil
+										puts "ERROR LEVE"
+									end
+									
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 57)
+module_eval(<<'.,.,', 'parser.y', 74)
   def _reduce_13(val, _values, result)
     result = BODY.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 58)
+module_eval(<<'.,.,', 'parser.y', 75)
   def _reduce_14(val, _values, result)
     result = BODY.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 59)
+module_eval(<<'.,.,', 'parser.y', 76)
   def _reduce_15(val, _values, result)
     result = BODIES.new(val[0],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 63)
+module_eval(<<'.,.,', 'parser.y', 80)
   def _reduce_16(val, _values, result)
     result = IF_THEN.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 64)
+module_eval(<<'.,.,', 'parser.y', 81)
   def _reduce_17(val, _values, result)
     result = IF_THEN_ELSE.new(val[1],val[3],val[5])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 68)
+module_eval(<<'.,.,', 'parser.y', 85)
   def _reduce_18(val, _values, result)
     result = ONE_COND_ITER.new(val[1],val[3])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 69)
+module_eval(<<'.,.,', 'parser.y', 86)
   def _reduce_19(val, _values, result)
     result = ITER.new(val[1],val[3],val[5])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 70)
+module_eval(<<'.,.,', 'parser.y', 87)
   def _reduce_20(val, _values, result)
     result = ID_ITER.new(val[1],val[3],val[5],val[7])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 74)
+module_eval(<<'.,.,', 'parser.y', 91)
   def _reduce_21(val, _values, result)
-    result = EXP_ID.new(val[0])
+     if a.lookup(val[0]) != nil
+										result = EXP_ID.new(val[0])
+									end
+									
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 75)
+module_eval(<<'.,.,', 'parser.y', 95)
   def _reduce_22(val, _values, result)
     result = EXP_NUM.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 76)
+module_eval(<<'.,.,', 'parser.y', 96)
   def _reduce_23(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 77)
+module_eval(<<'.,.,', 'parser.y', 97)
   def _reduce_24(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 78)
+module_eval(<<'.,.,', 'parser.y', 98)
   def _reduce_25(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 79)
+module_eval(<<'.,.,', 'parser.y', 99)
   def _reduce_26(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 80)
+module_eval(<<'.,.,', 'parser.y', 100)
   def _reduce_27(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 81)
+module_eval(<<'.,.,', 'parser.y', 101)
   def _reduce_28(val, _values, result)
     result = RIGHT_EXP.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 82)
+module_eval(<<'.,.,', 'parser.y', 102)
   def _reduce_29(val, _values, result)
     result = EXP.new(val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 83)
+module_eval(<<'.,.,', 'parser.y', 103)
   def _reduce_30(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 84)
+module_eval(<<'.,.,', 'parser.y', 104)
   def _reduce_31(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 85)
+module_eval(<<'.,.,', 'parser.y', 105)
   def _reduce_32(val, _values, result)
     result = LEFT_EXP.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 86)
+module_eval(<<'.,.,', 'parser.y', 106)
   def _reduce_33(val, _values, result)
     result = EXP_BOOL.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 87)
+module_eval(<<'.,.,', 'parser.y', 107)
   def _reduce_34(val, _values, result)
     result = EXP_BOOL.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 88)
+module_eval(<<'.,.,', 'parser.y', 108)
   def _reduce_35(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 89)
+module_eval(<<'.,.,', 'parser.y', 109)
   def _reduce_36(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 90)
+module_eval(<<'.,.,', 'parser.y', 110)
   def _reduce_37(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 91)
+module_eval(<<'.,.,', 'parser.y', 111)
   def _reduce_38(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 92)
+module_eval(<<'.,.,', 'parser.y', 112)
   def _reduce_39(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 93)
+module_eval(<<'.,.,', 'parser.y', 113)
   def _reduce_40(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 94)
+module_eval(<<'.,.,', 'parser.y', 114)
   def _reduce_41(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 95)
+module_eval(<<'.,.,', 'parser.y', 115)
   def _reduce_42(val, _values, result)
     result = DOUBLE_EXP.new(val[0],val[1],val[2])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 96)
+module_eval(<<'.,.,', 'parser.y', 116)
   def _reduce_43(val, _values, result)
     result = RIGHT_EXP.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 97)
+module_eval(<<'.,.,', 'parser.y', 117)
   def _reduce_44(val, _values, result)
     result = LEFT_EXP.new(val[0],val[1])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 98)
+module_eval(<<'.,.,', 'parser.y', 118)
   def _reduce_45(val, _values, result)
     result = EXP_CANVAS.new(val[0])
     result
   end
 .,.,
 
-module_eval(<<'.,.,', 'parser.y', 99)
+module_eval(<<'.,.,', 'parser.y', 119)
   def _reduce_46(val, _values, result)
     result = EXP_CANVAS.new(val[0])
     result

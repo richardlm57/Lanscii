@@ -39,9 +39,15 @@ rule
 
 		# Tipos de las declaraciones
 	DECLARE	
-		:	PERCENTAGE IDENTS					{result = DECLARE_INT.new(val[1])}
-		|	EXCLAMATIONMARK IDENTS				{result = DECLARE_BOOL.new(val[1])}
-		|	AT IDENTS							{result = DECLARE_LIE.new(val[1])}
+		:	PERCENTAGE IDENTS					{result = DECLARE_INT.new(val[1])
+												a.insert(val[1].get_id,:INT)
+												}
+		|	EXCLAMATIONMARK IDENTS				{result = DECLARE_BOOL.new(val[1])
+												a.insert(val[1].get_id,:BOOL)
+												}
+		|	AT IDENTS							{result = DECLARE_LIE.new(val[1])
+												a.insert(val[1].get_id,:CANV)
+												}
 
 		# Maneras de declarar
 	IDENTS	
@@ -51,10 +57,20 @@ rule
 
 		# Cuerpo del programa / Instrucciones
 	BODY 	
-		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])}
+		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])
+									tmp=a.lookup(val[0])
+									puts "sexo"
+									}
 		| 	PROGRAM 				{result = BODY.new(val[0])}
-		|	READ ID 				{result = BODY_READ.new(val[1]) }
-		| 	WRITE EXPR				{result = BODY_WRITE.new(val[1]) }
+		|	READ ID 				{result = BODY_READ.new(val[1])
+									if a.lookup(val[1])==nil
+										puts "ERROR LEVE"
+									end}
+		| 	WRITE EXPR				{result = BODY_WRITE.new(val[1]) 
+									if a.lookup(val[1].get_id)==nil
+										puts "ERROR LEVE"
+									end
+									}
 		|	COND					{result = BODY.new(val[0])}
 		|	ITER					{result = BODY.new(val[0])}
 		|	BODY SEMICOLON BODY     {result = BODIES.new(val[0],val[2])}
@@ -72,7 +88,10 @@ rule
 
 		# Expresiones
 	EXPR	
-		:	ID 						{result = EXP_ID.new(val[0])}
+		:	ID 						{ if a.lookup(val[0]) != nil
+										result = EXP_ID.new(val[0])
+									end
+									}
 		|	NUM						{result = EXP_NUM.new(val[0])}
 		|	EXPR PLUS EXPR          {result = DOUBLE_EXP.new(val[0],val[1],val[2])}
 		|	EXPR MINUS EXPR         {result = DOUBLE_EXP.new(val[0],val[1],val[2])}
@@ -100,6 +119,11 @@ rule
 		|	EMPTYCANVAS				{result = EXP_CANVAS.new(val[0])}
 
 end
+
+---- header ----
+
+require './symboltable'
+a=SymbolTable.new
 
 ---- inner ----
 

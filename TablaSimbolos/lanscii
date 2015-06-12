@@ -21,8 +21,9 @@ if l.matching						# Si no hubo errores lexicográficos,
 									# se procede con el análisis sintáctico del archivo
 									
 	p=Parser.new					# Se crea el parser
-	variable=p.parse(l.get_token)	# Se parsea el arreglo de tokens
-	variable.to_s(0)				# Se imprime el árbol generado por el parser
+	ast=p.parse(l.get_token)	# Se parsea el arreglo de tokens
+	ast.to_s(0)				# Se imprime el árbol generado por el parser
+	ast.check()
 
 else								# Si hubo errores lexicográficos, se imprimen
 	puts l.get_token

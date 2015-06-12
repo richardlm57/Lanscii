@@ -1,12 +1,18 @@
 class SymbolTable
 	def initialize
 		@table=Hash.new
+		@father=nil
 	end
-	def get_table	# Retorna el arreglo de tokens (o errores lexicográficos)
-		return @table
-	end
+
+	attr_accessor :table,:father
+
 	def insert(key,value)
-		@table[key]=value
+		result=@table[key]
+		if result == nil
+			@table[key]=value
+			return true
+		end
+		return false
 	end
 	def delete(key)
 		@table.delete(key)
@@ -18,6 +24,14 @@ class SymbolTable
 		return @table.has_key?(key)
 	end
 	def lookup(key)
-		return @table[key]
+		result=@table[key]
+		if result != nil
+			return result
+		else
+			if @father != nil
+				return @father.lookup(key)
+			end
+		end
+		return nil
 	end
 end
