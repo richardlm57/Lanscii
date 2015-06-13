@@ -29,7 +29,7 @@ class PROGRAM_DECLARE_BODY
 
 	def check
 		if !(@declare.insertId)
-			puts "ERROR AQUI"
+			puts "ERROR PROGRAMA"
 		end
 		$t.to_s
 		@body.check		
@@ -95,7 +95,7 @@ class MORE_IDENTS
 		@id = val1
 		@next_inst = val2
 		if !($t.insert(val2.get_id,$t.table[val1]))
-			puts "ERROR"
+			puts "ERROR DECLARANDO"
 		end
 	end
 	def get_id
@@ -109,7 +109,7 @@ class IDENTS_DECLARE
 		@id = val1
 		@declare = val2
 		if !(@declare.insertId)
-			puts "ERROR"
+			puts "ERROR DECLARANDO"
 		end
 	end
 	def get_id
@@ -135,16 +135,6 @@ class BODY_ASSIGN
 		@exp = val2
 	end
 
-	def check
-		tmp=$t.lookup(@id)
-		tmp2=@exp.get_type
-		if tmp2!=nil
-			if tmp!=tmp2
-				puts "ERROR ACA"
-			end
-		end
-	end
-
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
@@ -159,6 +149,16 @@ class BODY_ASSIGN
 		pipe+=1
 		puts "EXPRESSION:"
 		@exp.to_s(pipe)
+	end
+
+	def check
+		tmp=$t.lookup(@id)
+		tmp2=@exp.get_type
+		if tmp2!=nil
+			if tmp!=tmp2
+				puts "ERROR ASIGNACION"
+			end
+		end
 	end
 end
 
@@ -189,6 +189,11 @@ class BODY_READ
 		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id.to_s
 	end
+	def check
+		if $t.lookup(@id)==nil
+			puts "ERROR READ"
+		end
+	end
 end
 
 # Write
@@ -202,6 +207,11 @@ class BODY_WRITE
 		pipe+=1
 		puts 'WRITE:'
 		@expr.to_s(pipe)
+	end
+	def check
+		if @expr.get_type!=:CANV
+			puts "ERROR WRITE"
+		end
 	end
 end
 
@@ -236,6 +246,11 @@ class IF_THEN
 		puts "THEN:"
 		@body.to_s(pipe)
 	end
+	def check
+		if @exp.get_type
+			puts "ERROR IF THEN"
+		end
+	end
 end
 
 # Condicional doble
@@ -260,6 +275,11 @@ class IF_THEN_ELSE
 		print_pipe(pipe-1)
 		puts "ELSE:"
 		@body2.to_s(pipe)
+	end
+	def check
+		if @exp.get_type
+			puts "ERROR IF THEN ELSE"
+		end
 	end
 end
 
@@ -342,42 +362,42 @@ class DOUBLE_EXP
 			if (tmp==:INT && tmp2==:INT)
 				return :INT
 			else
-				puts "ERROR"
+				puts "ERROR EXP"
 				return nil
 			end
 		elsif @oper.match(/\/\\|\\\/|\^/)
 			if (tmp==:BOOL && tmp2==:BOOL)
 				return :BOOL
 			else
-				puts "ERROR"
+				puts "ERROR EXP"
 				return nil
 			end
 		elsif @oper.match(/&|~/)
 			if (tmp==:CANV && tmp2==:CANV)
 				return :CANV
 			else
-				puts "ERROR"
+				puts "ERROR EXP"
 				return nil
 			end
 		elsif @oper.match(/<=|>=|<|>/)
 			if (tmp==:INT && tmp2==:INT)
 				return :BOOL
 			else
-				puts "ERROR"
+				puts "ERROR EXP"
 				return nil
 			end
 		elsif @oper.match(/\=|\/=/)
 			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
-				puts "ERROR"
+				puts "ERROR EXP"
 				return nil
 			end
 		end
 	end
 end
 
-# Expresiones unarias con subexpresión a la izquierda (operador a la derecha)
+# Expresiones unarias con subexpresión a la izquierda (operador a la derecha) Not Apostrophe
 class LEFT_EXP
 	def initialize(val1,val2)	
 		@expr = val1
@@ -389,9 +409,27 @@ class LEFT_EXP
 		puts 'OPERATION: '+@oper.to_s
 		@expr.to_s(pipe)
 	end
+	def get_type
+		tmp=@expr.get_type
+		if @oper.match(/\^/)
+			if (tmp==:BOOL)
+				return :BOOL
+			else
+				puts "ERROR EXP"
+				return nil
+			end
+		elsif @oper.match(/'/)
+			if (tmp==:CANV)
+				return :CANV
+			else
+				puts "ERROR EXP"
+				return nil
+			end
+		end
+	end
 end
 
-# Expresiones unarias con subexpresión a la derecha (operador a la izquierda)
+# Expresiones unarias con subexpresión a la derecha (operador a la izquierda) Minus Dollar
 class RIGHT_EXP
 	def initialize(val1,val2)	
 		@expr = val2
@@ -402,6 +440,24 @@ class RIGHT_EXP
 		pipe+=1
 		puts 'OPERATION: '+@oper.to_s
 		@expr.to_s(pipe)
+	end
+	def get_type
+		tmp=@expr.get_type
+		if @oper.match(/-/)
+			if (tmp==:INT)
+				return :INT
+			else
+				puts "ERROR EXP"
+				return nil
+			end
+		elsif @oper.match(/$/)
+			if (tmp==:CANV)
+				return :CANV
+			else
+				puts "ERROR EXP"
+				return nil
+			end
+		end
 	end
 end
 
@@ -423,6 +479,11 @@ class ONE_COND_ITER
 		print_pipe(pipe-1)
 		puts "THEN:"
 		@body.to_s(pipe)
+	end
+	def check
+		if @expr.get_type
+			puts "ERROR ITER ONE"
+		end
 	end
 end
 
@@ -448,6 +509,11 @@ class ITER
 		print_pipe(pipe-1)
 		puts "DO:\n"
 		@body.to_s(pipe)
+	end
+	def check
+		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
+			puts "ERROR ITER TWO"
+		end
 	end
 end
 
@@ -476,6 +542,11 @@ class ID_ITER
 		print_pipe(pipe)
 		puts "DO:"
 		@body.to_s(pipe+1)
+	end
+	def check
+		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
+			puts "ERROR ITER ID"
+		end
 	end
 end
 
