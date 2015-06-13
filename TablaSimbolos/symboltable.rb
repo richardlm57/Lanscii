@@ -34,4 +34,7 @@ class SymbolTable
 		end
 		return nil
 	end
+	def to_s
+		puts @table
+	end
 end
