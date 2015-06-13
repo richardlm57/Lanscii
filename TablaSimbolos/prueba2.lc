@@ -1,0 +1,3 @@
+{%chao !hola |
+	hola = chao + 2
+}

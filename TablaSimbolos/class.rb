@@ -27,14 +27,12 @@ class PROGRAM_DECLARE_BODY
 		@table = $t
 	end
 
-	def insert
-		if !(@declare.insertId)
-			puts "ERROR"
-		end
-	end
-
 	def check
-		#@body.check
+		if !(@declare.insertId)
+			puts "ERROR AQUI"
+		end
+		$t.to_s
+		@body.check		
 	end
 
 	def to_s(pipe)
@@ -48,9 +46,6 @@ class PROGRAM_BODY
 	def initialize(val1)
 		@body = val1
 		@table = $t
-	end
-
-	def insert
 	end
 
 	def check
@@ -141,28 +136,26 @@ class BODY_ASSIGN
 	end
 
 	def check
-		$t.lookup(val1)
+		tmp=$t.lookup(@id)
+		tmp2=@exp.get_type
+		if tmp2!=nil
+			if tmp!=tmp2
+				puts "ERROR ACA"
+			end
+		end
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "ASSIGN:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "VARIABLE:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe-=1
 		puts "IDENTIFIER: " + @id.to_s
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "EXPRESSION:"
 		@exp.to_s(pipe)
@@ -187,19 +180,13 @@ class BODY_READ
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'READ:'
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'VARIABLE:'
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id.to_s
 	end
 end
@@ -211,9 +198,7 @@ class BODY_WRITE
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'WRITE:'
 		@expr.to_s(pipe)
@@ -240,20 +225,14 @@ class IF_THEN
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITIONAL STATEMENT:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITION:"
 		@exp.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "THEN:"
 		@body.to_s(pipe)
 	end
@@ -268,25 +247,17 @@ class IF_THEN_ELSE
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITIONAL STATEMENT:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITION:"
 		@exp.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "THEN:"
 		@body1.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "ELSE:"
 		@body2.to_s(pipe)
 	end
@@ -300,22 +271,22 @@ class EXP
 	def to_s(pipe)
 		@exp.to_s(pipe)
 	end
+	def get_type
+		return @exp.get_type
+	end
 end
 
 # Identificador de variable
 class EXP_ID
 	def initialize(val)
 		@id = val
-		@type = $t.lookup(val)
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id.to_s
 	end
 	def get_type
-		return @type
+		return $t.lookup(@id)
 	end
 end 
 
@@ -326,9 +297,7 @@ class EXP_NUM
 		@type = :INT
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts 'NUMBER: '+@value.to_s
 	end
 	def get_type
@@ -343,9 +312,7 @@ class EXP_BOOL
 		@type = :BOOL
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts 'BOOLEAN: ' + @value.to_s
 	end
 	def get_type
@@ -359,42 +326,53 @@ class DOUBLE_EXP
 		@expr1 = val1
 		@expr2 = val3
 		@oper = val2
-		@type = nil
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'OPERATION: ' + @oper.to_s
 		@expr1.to_s(pipe)
 		@expr2.to_s(pipe)
 	end
 	def get_type
-		tmp=val1.get_type
-		tmp2=val3.get_type
-		if @oper[1].match(/\+|\-|\*|\/|%/)
+		tmp=@expr1.get_type
+		tmp2=@expr2.get_type
+		if @oper.match(/\+|\-|\*|\/|%/)
+
 			if (tmp==:INT && tmp2==:INT)
-				@type=:INT
+				return :INT
+			else
+				puts "ERROR"
+				return nil
 			end
-		elsif @oper[1].match(/\/\\|\\\/|\^/)
+		elsif @oper.match(/\/\\|\\\/|\^/)
 			if (tmp==:BOOL && tmp2==:BOOL)
-				@type=:BOOL
+				return :BOOL
+			else
+				puts "ERROR"
+				return nil
 			end
-		elsif @oper[1].match(/&|~/)
+		elsif @oper.match(/&|~/)
 			if (tmp==:CANV && tmp2==:CANV)
-				@type=:CANV
+				return :CANV
+			else
+				puts "ERROR"
+				return nil
 			end
-		elsif @oper[1].match(/<=|>=|<|>/)
+		elsif @oper.match(/<=|>=|<|>/)
 			if (tmp==:INT && tmp2==:INT)
-				@type=:BOOL
+				return :BOOL
+			else
+				puts "ERROR"
+				return nil
 			end
-		elsif @oper[1].match(/\=|\/=/)
+		elsif @oper.match(/\=|\/=/)
 			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
-				@type=:BOOL
+				return :BOOL
+			else
+				puts "ERROR"
+				return nil
 			end
-		else
-			@type=nil
 		end
 	end
 end
@@ -406,9 +384,7 @@ class LEFT_EXP
 		@oper = val2
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'OPERATION: '+@oper.to_s
 		@expr.to_s(pipe)
@@ -422,9 +398,7 @@ class RIGHT_EXP
 		@oper = val1
 	end
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts 'OPERATION: '+@oper.to_s
 		@expr.to_s(pipe)
@@ -439,20 +413,14 @@ class ONE_COND_ITER
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "ITERATION STATEMENT:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITION:" 
 		@expr.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "THEN:"
 		@body.to_s(pipe)
 	end
@@ -467,25 +435,17 @@ class ITER
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "ITERATION STATEMENT:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "LOWER LIMIT:"
 		@expr1.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "UPPER LIMIT:" 
 		@expr2.to_s(pipe)
-		for i in 1..pipe-1
-			print "|  "
-		end
+		print_pipe(pipe-1)
 		puts "DO:\n"
 		@body.to_s(pipe)
 	end
@@ -502,28 +462,18 @@ class ID_ITER
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		pipe+=1
 		puts "ITERATION STATEMENT:"
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts "IDENTIFIER:" + @id.to_s
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts "LOWER LIMIT:" 
 		@expr1.to_s(pipe+1)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts "UPPER LIMIT:"
 		@expr2.to_s(pipe+1)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts "DO:"
 		@body.to_s(pipe+1)
 	end
@@ -537,9 +487,7 @@ class EXP_CANVAS
 	end
 
 	def to_s(pipe)
-		for i in 1..pipe
-			print "|  "
-		end
+		print_pipe(pipe)
 		puts 'CANVAS: '+@canvas.to_s
 	end
 	def get_type
