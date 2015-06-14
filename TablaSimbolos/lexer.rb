@@ -16,7 +16,7 @@ class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un arch
 		@file=f
 		@token = nil
 		@strings_dic = {"{"=>"LCURLY","}"=>"RCURLY","|"=>"PIPE","%"=>"PERCENTAGE","!"=>"EXCLAMATIONMARK",
-						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS",
+						"@"=>"AT","</>"=>"CANVAS","<\\>"=>"CANVAS","<|>"=>"CANVAS","< >"=>"CANVAS",
 						"<_>"=>"CANVAS","<->"=>"CANVAS","="=>"EQUALS",".."=>"DOUBLEDOT",";"=>"SEMICOLON",
 						"read"=>"READ","write"=>"WRITE","?"=>"QUESTIONMARK", "&"=>"AMPERSAND", "~"=>"TILDE",
 						":"=>"COLON","("=>"LPARENTHESIS",")"=>"RPARENTHESIS", "["=>"LSQUARE", "]"=>"RSQUARE",
@@ -48,7 +48,7 @@ class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un arch
 		comment=false 	# Determina si se está dentro de un comentario
 		commentR=0		# Línea del inicio de comentario
 		commentC=0		# Columna del inicio de comentario
-		varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\ >|\/\\|\\\/|<=|>=|\.\.|
+		varMatch=/\{-|-\}|\/=|<\/>|<\\>|<\|>|<_>|<->|<\s>|\/\\|\\\/|<=|>=|\.\.|
 				|([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*|[0-9]+|
 				|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\+|-|\*|\/|\^|<|>|\[|\]|&|~|
 				|#|\$|'|true|false/ 	# Expresión regular para reconocer las palabras reservadas de LANSCII
@@ -89,26 +89,26 @@ class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un arch
 							j+=m[0].size
 
 						elsif m[0] =~ /-}/
-							correct_program.push([eval(':'+@strings_dic[m[0][0]]),m[0][0]])
+							correct_program.push([eval(':'+@strings_dic[m[0][0]]),[m[0][0],i.to_s,(j+1).to_s]])
 							j+=1
-							correct_program.push([eval(':'+@strings_dic[m[0][1]]),m[0][1]])
+							correct_program.push([eval(':'+@strings_dic[m[0][1]]),[m[0][1],i.to_s,(j+1).to_s]])
 							j+=1
 
-						elsif m[0] =~ /<\/>|<\\>|<\|>|<_>|<->|<\ >/
-							correct_program.push([eval(':'+@strings_dic[m[0]]),m[0]])
+						elsif m[0] =~ /<\/>|<\\>|<\|>|<_>|<->|<\s>/
+							correct_program.push([eval(':'+@strings_dic[m[0]]),[m[0],i.to_s,(j+1).to_s]])
 							j+=m[0].size
 
 						elsif m[0] =~ /\/=|\/\\|\\\/|<=|>=|\.\.|<|>|\{|\}|\||%|!|@|=|;|read|write|\?|:|\(|\)|\[|\]|&|~|
 							|\+|\-|\*|\/|\^|#|\$|'|true|false/
-							correct_program.push([eval(':'+@strings_dic[m[0]]),m[0]])
+							correct_program.push([eval(':'+@strings_dic[m[0]]),[m[0],i.to_s,(j+1).to_s]])
 							j+=m[0].size
 
 						elsif m[0] =~ /([A-Z]|[a-z]|_)([A-Z]|[a-z]|_|[0-9])*/
-							correct_program.push([eval(':ID'),m[0]])
+							correct_program.push([eval(':ID'),[m[0],i.to_s,(j+1).to_s]])
 							j+=m[0].size
 
 						elsif m[0] =~ /[0-9]+/
-							correct_program.push([eval(':NUM'),m[0]])
+							correct_program.push([eval(':NUM'),[m[0],i.to_s,(j+1).to_s]])
 							j+=m[0].size
 
 						end

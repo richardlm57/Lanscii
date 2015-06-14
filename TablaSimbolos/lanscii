@@ -22,7 +22,7 @@ if l.matching						# Si no hubo errores lexicográficos,
 	#puts l.get_token						
 	p=Parser.new					# Se crea el parser
 	ast=p.parse(l.get_token)		# Se parsea el arreglo de tokens
-	#ast.to_s(0)						# Se imprime el árbol generado por el parser
+	ast.to_s(0)						# Se imprime el árbol generado por el parser
 	error=ast.check
 	puts error
 

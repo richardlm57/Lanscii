@@ -17,7 +17,7 @@ class SyntacticError < RuntimeError
   end
 
   def to_s
-    "Lanscii Parsing Error: Syntactic error of token '#{@token}'"   
+    "Lanscii Parsing Error: Syntactic error of token '#{@token[0]}' at line '#{@token[1]}', column '#{@token[2]}'"   
   end
 end
 

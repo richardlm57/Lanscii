@@ -116,7 +116,7 @@ class MORE_IDENTS
 		@next_inst = val2
 	end
 	def insertId(type)
-		if !($t.insert(@id,type))
+		if !($t.insert(@id[0],type))
 			$e.push("ERROR DECLARANDO")
 		end
 		@next_inst.insertId(type)
@@ -131,7 +131,7 @@ class IDENTS_DECLARE
 		@declare = val2
 	end
 	def insertId(type)
-		if !($t.insert(@id,type))
+		if !($t.insert(@id[0],type))
 			$e.push("ERROR DECLARANDO")
 		end
 		@declare.insertId()
@@ -145,7 +145,7 @@ class IDENTS_ID
 		@id = val1
 	end
 	def insertId(type)
-		$t.insert(@id,type)
+		$t.insert(@id[0],type)
 
 	end
 end
@@ -167,7 +167,7 @@ class BODY_ASSIGN
 		puts "VARIABLE:"
 		print_pipe(pipe)
 		pipe-=1
-		puts "IDENTIFIER: " + @id.to_s
+		puts "IDENTIFIER: " + @id[0].to_s
 		print_pipe(pipe)
 		pipe+=1
 		puts "EXPRESSION:"
@@ -175,10 +175,10 @@ class BODY_ASSIGN
 	end
 
 	def check
-		if $t.lookup("1"+@id)==:CONT
+		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("ERROR CONTADOR")
 		end
-		tmp=$t.lookup(@id)		
+		tmp=$t.lookup(@id[0])		
 		tmp2=@exp.get_type
 		if tmp2!=nil
 			if tmp!=tmp2
@@ -217,13 +217,13 @@ class BODY_READ
 		pipe+=1
 		puts 'VARIABLE:'
 		print_pipe(pipe)
-		puts 'IDENTIFIER: ' + @id.to_s
+		puts 'IDENTIFIER: ' + @id[0].to_s
 	end
 	def check
-		if $t.lookup("1"+@id)==:CONT
+		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("ERROR CONTADOR")
 		end
-		if $t.lookup(@id)==nil
+		if $t.lookup(@id[0])==nil
 			$e.push("ERROR READ")
 		end
 	end
@@ -343,10 +343,10 @@ class EXP_ID
 	end
 	def to_s(pipe)
 		print_pipe(pipe)
-		puts 'IDENTIFIER: ' + @id.to_s
+		puts 'IDENTIFIER: ' + @id[0].to_s
 	end
 	def get_type
-		return $t.lookup(@id)
+		return $t.lookup(@id[0])
 	end
 end 
 
@@ -358,7 +358,7 @@ class EXP_NUM
 	end
 	def to_s(pipe)
 		print_pipe(pipe)
-		puts 'NUMBER: '+@value.to_s
+		puts 'NUMBER: '+@value[0].to_s
 	end
 	def get_type
 		return @type
@@ -373,7 +373,7 @@ class EXP_BOOL
 	end
 	def to_s(pipe)
 		print_pipe(pipe)
-		puts 'BOOLEAN: ' + @value.to_s
+		puts 'BOOLEAN: ' + @value[0].to_s
 	end
 	def get_type
 		return @type
@@ -390,14 +390,14 @@ class DOUBLE_EXP
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
-		puts 'OPERATION: ' + @oper.to_s
+		puts 'OPERATION: ' + @oper[0].to_s
 		@expr1.to_s(pipe)
 		@expr2.to_s(pipe)
 	end
 	def get_type
 		tmp=@expr1.get_type
 		tmp2=@expr2.get_type
-		if @oper.match(/\+|\-|\*|\/|%/)
+		if @oper[0].match(/\+|\-|\*|\/|%/)
 
 			if (tmp==:INT && tmp2==:INT)
 				return :INT
@@ -405,28 +405,28 @@ class DOUBLE_EXP
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/\/\\|\\\/|\^/)
+		elsif @oper[0].match(/\/\\|\\\/|\^/)
 			if (tmp==:BOOL && tmp2==:BOOL)
 				return :BOOL
 			else
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/&|~/)
+		elsif @oper[0].match(/&|~/)
 			if (tmp==:CANV && tmp2==:CANV)
 				return :CANV
 			else
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/<=|>=|<|>/)
+		elsif @oper[0].match(/<=|>=|<|>/)
 			if (tmp==:INT && tmp2==:INT)
 				return :BOOL
 			else
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/\=|\/=/)
+		elsif @oper[0].match(/\=|\/=/)
 			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
@@ -446,19 +446,19 @@ class LEFT_EXP
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
-		puts 'OPERATION: '+@oper.to_s
+		puts 'OPERATION: '+@oper[0].to_s
 		@expr.to_s(pipe)
 	end
 	def get_type
 		tmp=@expr.get_type
-		if @oper.match(/\^/)
+		if @oper[0].match(/\^/)
 			if (tmp==:BOOL)
 				return :BOOL
 			else
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/'/)
+		elsif @oper[0].match(/'/)
 			if (tmp==:CANV)
 				return :CANV
 			else
@@ -478,19 +478,19 @@ class RIGHT_EXP
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
-		puts 'OPERATION: '+@oper.to_s
+		puts 'OPERATION: '+@oper[0].to_s
 		@expr.to_s(pipe)
 	end
 	def get_type
 		tmp=@expr.get_type
-		if @oper.match(/-/)
+		if @oper[0].match(/-/)
 			if (tmp==:INT)
 				return :INT
 			else
 				$e.push("ERROR EXP")
 				return nil
 			end
-		elsif @oper.match(/$/)
+		elsif @oper[0].match(/$/)
 			if (tmp==:CANV)
 				return :CANV
 			else
@@ -574,7 +574,7 @@ class ID_ITER
 		pipe+=1
 		puts "ITERATION STATEMENT:"
 		print_pipe(pipe)
-		puts "IDENTIFIER:" + @id.to_s
+		puts "IDENTIFIER:" + @id[0].to_s
 		print_pipe(pipe)
 		puts "LOWER LIMIT:" 
 		@expr1.to_s(pipe+1)
@@ -589,13 +589,13 @@ class ID_ITER
 		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
 			$e.push("ERROR ITER ID")
 		end
-		if $t.lookup("1"+@id)==:CONT
+		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("ERROR CONTADOR")
 		end
 		puts "Estoy aqui"
-		$t.insert("1"+@id,:CONT)
+		$t.insert("1"+@id[0],:CONT)
 		@body.check
-		$t.delete("1"+@id)	
+		$t.delete("1"+@id[0])	
 	end
 end
 
@@ -608,7 +608,7 @@ class EXP_CANVAS
 
 	def to_s(pipe)
 		print_pipe(pipe)
-		puts 'CANVAS: '+@canvas.to_s
+		puts 'CANVAS: '+@canvas[0].to_s
 	end
 	def get_type
 		return @type
