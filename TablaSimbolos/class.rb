@@ -172,7 +172,10 @@ class BODY_ASSIGN
 	end
 
 	def check
-		tmp=$t.lookup(@id)
+		if $t.lookup("1"+@id)==:CONT
+			puts "ERROR CONTADOR"
+		end
+		tmp=$t.lookup(@id)		
 		tmp2=@exp.get_type
 		if tmp2!=nil
 			if tmp!=tmp2
@@ -214,6 +217,9 @@ class BODY_READ
 		puts 'IDENTIFIER: ' + @id.to_s
 	end
 	def check
+		if $t.lookup("1"+@id)==:CONT
+			puts "ERROR CONTADOR"
+		end
 		if $t.lookup(@id)==nil
 			puts "ERROR READ"
 		end
@@ -275,6 +281,7 @@ class IF_THEN
 		@body.to_s(pipe)
 	end
 	def check
+		@body.check
 		if @exp.get_type == nil
 			puts "ERROR IF THEN"
 		end
@@ -305,6 +312,8 @@ class IF_THEN_ELSE
 		@body2.to_s(pipe)
 	end
 	def check
+		@body1.check
+		@body2.check
 		if @exp.get_type
 			puts "ERROR IF THEN ELSE"
 		end
@@ -509,6 +518,7 @@ class ONE_COND_ITER
 		@body.to_s(pipe)
 	end
 	def check
+		@body.check
 		if @expr.get_type!=:BOOL
 			puts "ERROR ITER ONE"
 		end
@@ -539,6 +549,7 @@ class ITER
 		@body.to_s(pipe)
 	end
 	def check
+		@body.check
 		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
 			puts "ERROR ITER TWO"
 		end
@@ -575,6 +586,13 @@ class ID_ITER
 		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
 			puts "ERROR ITER ID"
 		end
+		if $t.lookup("1"+@id)==:CONT
+			puts "ERROR CONTADOR"
+		end
+		puts "Estoy aqui"
+		$t.insert("1"+@id,:CONT)
+		@body.check
+		$t.delete("1"+@id)	
 	end
 end
 

@@ -19,7 +19,7 @@ l=Lexer.new(ARGV[0]) 				# Se crea el lexer
 
 if l.matching						# Si no hubo errores lexicográficos, 
 									# se procede con el análisis sintáctico del archivo
-									
+	#puts l.get_token						
 	p=Parser.new					# Se crea el parser
 	ast=p.parse(l.get_token)		# Se parsea el arreglo de tokens
 	#ast.to_s(0)						# Se imprime el árbol generado por el parser

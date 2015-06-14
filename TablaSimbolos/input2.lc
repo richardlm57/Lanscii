@@ -1,7 +1,8 @@
-{ %x y @lie !boo |
-    [2 .. 6 |
+{ %x y z @lie !boo |
+    [z: 2 .. 6 |
     x = 10 ;
-    y = 15 ];
+    z = 15 + z;
+    [z: 2 .. 6 | write lie] ];
     boo = false ;
     lie = # ;
     { @boo |
