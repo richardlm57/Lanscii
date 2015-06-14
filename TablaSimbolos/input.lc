@@ -1,12 +1,16 @@
 { %foo bar !h|
-    bar = 3;
+    foo = 3;
     write foo + 3;
     h = false;
     {- asignar a foo el doble del valor de bar, más treinta y cinco;
         si bar es mayor a dos -}
-    ( bar > 2 ?
-        foo = 35 + bar * 2
+    ( foo > 2 ?
+        foo = 35 + foo * 2
     );
-    e=$hola~chao;
-    [foo > 2 | foo = 33]
+    {%i @h|
+        bar = 3;
+        {%a |
+            a=5
+        }
+    }
 }

@@ -28,11 +28,20 @@ class PROGRAM_DECLARE_BODY
 	end
 
 	def check
+		if $t.table != {}
+			@table = SymbolTable.new
+			@table.father = $t
+			$t = @table
+		end
 		if !(@declare.insertId)
 			puts "ERROR PROGRAMA"
 		end
 		$t.to_s
-		@body.check		
+		@body.check
+
+		if $t.father != nil
+			$t = $t.father
+		end	
 	end
 
 	def to_s(pipe)
@@ -49,7 +58,15 @@ class PROGRAM_BODY
 	end
 
 	def check
-		#@body.check
+		if $t.table != {}
+			@table = SymbolTable.new
+			@table.father = $t
+			$t = @table
+		end
+		@body.check
+		if $t.father != nil
+			$t = $t.father
+		end	
 	end
 
 	def to_s(pipe)
@@ -64,7 +81,7 @@ class DECLARE_INT
 	end
 
 	def insertId
-		return $t.insert(@inst.get_id,:INT)
+		@inst.insertId(:INT)
 	end
 end
 
@@ -75,7 +92,7 @@ class DECLARE_BOOL
 	end
 
 	def insertId
-		return $t.insert(@inst.get_id,:BOOL)
+		@inst.insertId(:BOOL)
 	end
 end
 
@@ -85,7 +102,7 @@ class DECLARE_LIE
 		@inst = val
 	end
 	def insertId
-		return $t.insert(@inst.get_id,:CANV)
+		@inst.insertId(:CANV)
 	end
 end
 
@@ -94,12 +111,13 @@ class MORE_IDENTS
 	def initialize(val1,val2)
 		@id = val1
 		@next_inst = val2
-		if !($t.insert(val2.get_id,$t.table[val1]))
+	end
+	def insertId(type)
+		if !($t.insert(@id,type))
 			puts "ERROR DECLARANDO"
 		end
-	end
-	def get_id
-		return @id
+		@next_inst.insertId(type)
+
 	end
 end
 
@@ -108,12 +126,13 @@ class IDENTS_DECLARE
 	def initialize(val1,val2)
 		@id = val1
 		@declare = val2
-		if !(@declare.insertId)
+	end
+	def insertId(type)
+		if !($t.insert(@id,type))
 			puts "ERROR DECLARANDO"
 		end
-	end
-	def get_id
-		return @id
+		@declare.insertId()
+
 	end
 end
 
@@ -122,8 +141,9 @@ class IDENTS_ID
 	def initialize(val1)
 		@id = val1
 	end
-	def get_id
-		return @id
+	def insertId(type)
+		$t.insert(@id,type)
+
 	end
 end
 
@@ -171,6 +191,10 @@ class BODY
 	def to_s(pipe)
 		@body.to_s(pipe)
 	end
+
+	def check()
+		@body.check()
+	end
 end
 
 # Read
@@ -209,7 +233,7 @@ class BODY_WRITE
 		@expr.to_s(pipe)
 	end
 	def check
-		if @expr.get_type!=:CANV
+		if @expr.get_type!=:INT
 			puts "ERROR WRITE"
 		end
 	end
@@ -224,6 +248,10 @@ class BODIES
 	def to_s(pipe)
 		@body1.to_s(pipe)
 		@body2.to_s(pipe)
+	end
+	def check()
+		@body1.check()
+		@body2.check()
 	end
 end
 
@@ -247,7 +275,7 @@ class IF_THEN
 		@body.to_s(pipe)
 	end
 	def check
-		if @exp.get_type
+		if @exp.get_type == nil
 			puts "ERROR IF THEN"
 		end
 	end
