@@ -192,8 +192,8 @@ class BODY
 		@body.to_s(pipe)
 	end
 
-	def check()
-		@body.check()
+	def check
+		@body.check
 	end
 end
 
@@ -233,7 +233,7 @@ class BODY_WRITE
 		@expr.to_s(pipe)
 	end
 	def check
-		if @expr.get_type!=:INT
+		if @expr.get_type!=:CANV
 			puts "ERROR WRITE"
 		end
 	end
@@ -249,9 +249,9 @@ class BODIES
 		@body1.to_s(pipe)
 		@body2.to_s(pipe)
 	end
-	def check()
-		@body1.check()
-		@body2.check()
+	def check
+		@body1.check
+		@body2.check
 	end
 end
 
@@ -509,7 +509,7 @@ class ONE_COND_ITER
 		@body.to_s(pipe)
 	end
 	def check
-		if @expr.get_type
+		if @expr.get_type!=:BOOL
 			puts "ERROR ITER ONE"
 		end
 	end

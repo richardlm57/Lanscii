@@ -1,0 +1,16 @@
+{ %x y @lie !boo |
+    [2 .. 6 |
+    x = 10 ;
+    y = 15 ];
+    boo = false ;
+    lie = # ;
+    { @boo |
+         boo = #
+    } ;
+    {
+         {
+            boo = false;
+              x = 42
+         }
+     }
+}
