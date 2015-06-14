@@ -176,7 +176,7 @@ class BODY_ASSIGN
 
 	def check
 		if $t.lookup("1"+@id)==:CONT
-			puts "ERROR CONTADOR"
+			$e.push("ERROR CONTADOR")
 		end
 		tmp=$t.lookup(@id)		
 		tmp2=@exp.get_type
@@ -221,7 +221,7 @@ class BODY_READ
 	end
 	def check
 		if $t.lookup("1"+@id)==:CONT
-			puts "ERROR CONTADOR"
+			$e.push("ERROR CONTADOR")
 		end
 		if $t.lookup(@id)==nil
 			$e.push("ERROR READ")
@@ -590,7 +590,7 @@ class ID_ITER
 			$e.push("ERROR ITER ID")
 		end
 		if $t.lookup("1"+@id)==:CONT
-			puts "ERROR CONTADOR"
+			$e.push("ERROR CONTADOR")
 		end
 		puts "Estoy aqui"
 		$t.insert("1"+@id,:CONT)
