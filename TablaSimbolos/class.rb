@@ -10,6 +10,7 @@
 =end
 require './symboltable'
 $t=SymbolTable.new
+$e=Array.new
 
 # Funcion para imprimir pipes.
 def print_pipe(pipe)
@@ -34,14 +35,16 @@ class PROGRAM_DECLARE_BODY
 			$t = @table
 		end
 		if !(@declare.insertId)
-			puts "ERROR PROGRAMA"
+			$e.push("ERROR PROGRAMA")
 		end
 		$t.to_s
 		@body.check
 
 		if $t.father != nil
 			$t = $t.father
-		end	
+		else
+			return $e
+		end
 	end
 
 	def to_s(pipe)
@@ -114,7 +117,7 @@ class MORE_IDENTS
 	end
 	def insertId(type)
 		if !($t.insert(@id,type))
-			puts "ERROR DECLARANDO"
+			$e.push("ERROR DECLARANDO")
 		end
 		@next_inst.insertId(type)
 
@@ -129,7 +132,7 @@ class IDENTS_DECLARE
 	end
 	def insertId(type)
 		if !($t.insert(@id,type))
-			puts "ERROR DECLARANDO"
+			$e.push("ERROR DECLARANDO")
 		end
 		@declare.insertId()
 
@@ -179,7 +182,7 @@ class BODY_ASSIGN
 		tmp2=@exp.get_type
 		if tmp2!=nil
 			if tmp!=tmp2
-				puts "ERROR ASIGNACION"
+				$e.push("ERROR ASIGNACION")
 			end
 		end
 	end
@@ -221,7 +224,7 @@ class BODY_READ
 			puts "ERROR CONTADOR"
 		end
 		if $t.lookup(@id)==nil
-			puts "ERROR READ"
+			$e.push("ERROR READ")
 		end
 	end
 end
@@ -240,7 +243,7 @@ class BODY_WRITE
 	end
 	def check
 		if @expr.get_type!=:CANV
-			puts "ERROR WRITE"
+			$e.push("ERROR WRITE")
 		end
 	end
 end
@@ -283,7 +286,7 @@ class IF_THEN
 	def check
 		@body.check
 		if @exp.get_type == nil
-			puts "ERROR IF THEN"
+			$e.push("ERROR IF THEN")
 		end
 	end
 end
@@ -315,7 +318,7 @@ class IF_THEN_ELSE
 		@body1.check
 		@body2.check
 		if @exp.get_type
-			puts "ERROR IF THEN ELSE"
+			$e.push("ERROR IF THEN ELSE")
 		end
 	end
 end
@@ -399,35 +402,35 @@ class DOUBLE_EXP
 			if (tmp==:INT && tmp2==:INT)
 				return :INT
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/\/\\|\\\/|\^/)
 			if (tmp==:BOOL && tmp2==:BOOL)
 				return :BOOL
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/&|~/)
 			if (tmp==:CANV && tmp2==:CANV)
 				return :CANV
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/<=|>=|<|>/)
 			if (tmp==:INT && tmp2==:INT)
 				return :BOOL
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/\=|\/=/)
 			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		end
@@ -452,14 +455,14 @@ class LEFT_EXP
 			if (tmp==:BOOL)
 				return :BOOL
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/'/)
 			if (tmp==:CANV)
 				return :CANV
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		end
@@ -484,14 +487,14 @@ class RIGHT_EXP
 			if (tmp==:INT)
 				return :INT
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		elsif @oper.match(/$/)
 			if (tmp==:CANV)
 				return :CANV
 			else
-				puts "ERROR EXP"
+				$e.push("ERROR EXP")
 				return nil
 			end
 		end
@@ -520,7 +523,7 @@ class ONE_COND_ITER
 	def check
 		@body.check
 		if @expr.get_type!=:BOOL
-			puts "ERROR ITER ONE"
+			$e.push("ERROR ITER ONE")
 		end
 	end
 end
@@ -551,7 +554,7 @@ class ITER
 	def check
 		@body.check
 		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
-			puts "ERROR ITER TWO"
+			$e.push("ERROR ITER TWO")
 		end
 	end
 end
@@ -584,7 +587,7 @@ class ID_ITER
 	end
 	def check
 		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
-			puts "ERROR ITER ID"
+			$e.push("ERROR ITER ID")
 		end
 		if $t.lookup("1"+@id)==:CONT
 			puts "ERROR CONTADOR"
