@@ -19,9 +19,10 @@ def print_pipe(pipe)
 	end
 end
 
+# Función para imprimir errores de tipo
 def print_error(oper,type)
 	if type == :INT
-		return"Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'"
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'"
 	elsif type == :CANV
 		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '!'"
 	else
@@ -39,6 +40,7 @@ class PROGRAM_DECLARE_BODY
 		@table = $t
 	end
 
+	#Chequeo de tipos
 	def check
 		if $t.table != {}
 			@table = SymbolTable.new
@@ -71,6 +73,7 @@ class PROGRAM_BODY
 		@table = $t
 	end
 
+	#Chequeo de tipos
 	def check
 		if $t.table != {}
 			@table = SymbolTable.new
@@ -94,6 +97,7 @@ class DECLARE_INT
 		@inst = val
 	end
 
+	# Función para insertar variables en la tabla de símbolos
 	def insertId
 		@inst.insertId(:INT)
 	end
@@ -105,6 +109,7 @@ class DECLARE_BOOL
 		@inst = val
 	end
 
+	# Función para insertar variables en la tabla de símbolos
 	def insertId
 		@inst.insertId(:BOOL)
 	end
@@ -115,6 +120,8 @@ class DECLARE_LIE
 	def initialize(val)
 		@inst = val
 	end
+
+	# Función para insertar variables en la tabla de símbolos
 	def insertId
 		@inst.insertId(:CANV)
 	end
@@ -126,6 +133,8 @@ class MORE_IDENTS
 		@id = val1
 		@next_inst = val2
 	end
+
+	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		if !($t.insert(@id[0],type))
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
@@ -141,6 +150,8 @@ class IDENTS_DECLARE
 		@id = val1
 		@declare = val2
 	end
+
+	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		if !($t.insert(@id[0],type))
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
@@ -155,6 +166,8 @@ class IDENTS_ID
 	def initialize(val1)
 		@id = val1
 	end
+
+	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		$t.insert(@id[0],type)
 
@@ -185,6 +198,7 @@ class BODY_ASSIGN
 		@exp.to_s(pipe)
 	end
 
+	#Chequeo de tipos
 	def check
 		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
@@ -213,6 +227,7 @@ class BODY
 		@body.to_s(pipe)
 	end
 
+	#Chequeo de tipos
 	def check
 		@body.check
 	end
@@ -234,6 +249,8 @@ class BODY_READ
 		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id[0].to_s
 	end
+
+	#Chequeo de tipos
 	def check
 		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
@@ -256,6 +273,8 @@ class BODY_WRITE
 		puts 'WRITE:'
 		@expr.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		if @expr.get_type!=:CANV
 			if @expr.get_type != nil
@@ -275,6 +294,8 @@ class BODIES
 		@body1.to_s(pipe)
 		@body2.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		@body1.check
 		@body2.check
@@ -300,6 +321,8 @@ class IF_THEN
 		puts "THEN:"
 		@body.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		@body.check
 		if @exp.get_type == nil
@@ -331,6 +354,8 @@ class IF_THEN_ELSE
 		puts "ELSE:"
 		@body2.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		@body1.check
 		@body2.check
@@ -348,8 +373,15 @@ class EXP
 	def to_s(pipe)
 		@exp.to_s(pipe)
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		return @exp.get_type
+	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @exp.get_oper
 	end
 end
 
@@ -358,12 +390,20 @@ class EXP_ID
 	def initialize(val)
 		@id = val
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id[0].to_s
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		return $t.lookup(@id[0])
+	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @id
 	end
 end 
 
@@ -373,12 +413,20 @@ class EXP_NUM
 		@value = val
 		@type = :INT
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		puts 'NUMBER: '+@value[0].to_s
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		return @type
+	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @value
 	end
 end
 
@@ -388,12 +436,20 @@ class EXP_BOOL
 		@value = val
 		@type = :BOOL
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		puts 'BOOLEAN: ' + @value[0].to_s
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		return @type
+	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @value
 	end
 end
 
@@ -404,9 +460,12 @@ class DOUBLE_EXP
 		@expr2 = val3
 		@oper = val2
 	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
 	def get_oper
 		return @oper
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
@@ -414,6 +473,8 @@ class DOUBLE_EXP
 		@expr1.to_s(pipe)
 		@expr2.to_s(pipe)
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		tmp=@expr1.get_type
 		tmp2=@expr2.get_type
@@ -462,12 +523,20 @@ class LEFT_EXP
 		@expr = val1
 		@oper = val2
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
 		puts 'OPERATION: '+@oper[0].to_s
 		@expr.to_s(pipe)
 	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @oper
+	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		tmp=@expr.get_type
 		if @oper[0].match(/\^/)
@@ -494,12 +563,20 @@ class RIGHT_EXP
 		@expr = val2
 		@oper = val1
 	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
 		puts 'OPERATION: '+@oper[0].to_s
 		@expr.to_s(pipe)
 	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @oper
+	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		tmp=@expr.get_type
 		if @oper[0].match(/-/)
@@ -539,6 +616,8 @@ class ONE_COND_ITER
 		puts "THEN:"
 		@body.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		@body.check
 		if @expr.get_type!=:BOOL
@@ -570,6 +649,8 @@ class ITER
 		puts "DO:\n"
 		@body.to_s(pipe)
 	end
+
+	#Chequeo de tipos
 	def check
 		@body.check
 		if !(@expr1.get_type==:INT)
@@ -606,6 +687,8 @@ class ID_ITER
 		puts "DO:"
 		@body.to_s(pipe+1)
 	end
+
+	#Chequeo de tipos
 	def check
 		if !(@expr1.get_type==:INT)
 			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
@@ -632,6 +715,8 @@ class EXP_CANVAS
 		print_pipe(pipe)
 		puts 'CANVAS: '+@canvas[0].to_s
 	end
+
+	# Función para obtener el tipo de la expresión
 	def get_type
 		return @type
 	end
