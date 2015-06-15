@@ -19,10 +19,21 @@ def print_pipe(pipe)
 	end
 end
 
+def print_error(oper,type)
+	if type == :INT
+		return"Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'"
+	elsif type == :CANV
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '!'"
+	else
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '@'"
+	end
+end
+
 # Símbolo inicial con declaraciones de variables
 class PROGRAM_DECLARE_BODY
 	attr_accessor :table
-	def initialize(val1,val2)
+	def initialize(curly,val1,val2)
+		@curly = curly
 		@declare = val1
 		@body = val2
 		@table = $t
@@ -34,10 +45,10 @@ class PROGRAM_DECLARE_BODY
 			@table.father = $t
 			$t = @table
 		end
-		if !(@declare.insertId)
-			$e.push("ERROR PROGRAMA")
-		end
+		@declare.insertId
+		print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
 		$t.to_s
+		puts ""
 		@body.check
 
 		if $t.father != nil
@@ -117,7 +128,7 @@ class MORE_IDENTS
 	end
 	def insertId(type)
 		if !($t.insert(@id[0],type))
-			$e.push("ERROR DECLARANDO")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
 		end
 		@next_inst.insertId(type)
 
@@ -132,7 +143,7 @@ class IDENTS_DECLARE
 	end
 	def insertId(type)
 		if !($t.insert(@id[0],type))
-			$e.push("ERROR DECLARANDO")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
 		end
 		@declare.insertId()
 
@@ -176,13 +187,17 @@ class BODY_ASSIGN
 
 	def check
 		if $t.lookup("1"+@id[0])==:CONT
-			$e.push("ERROR CONTADOR")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
-		tmp=$t.lookup(@id[0])		
-		tmp2=@exp.get_type
-		if tmp2!=nil
-			if tmp!=tmp2
-				$e.push("ERROR ASIGNACION")
+		tmp=$t.lookup(@id[0])
+		if tmp == nil
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+@id[0].to_s+"' is not declared")
+		else
+			tmp2=@exp.get_type
+			if tmp2!=nil
+				if tmp!=tmp2
+					$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+tmp.to_s+"' type is incompatible with '"+tmp2.to_s+"'")
+				end
 			end
 		end
 	end
@@ -221,10 +236,10 @@ class BODY_READ
 	end
 	def check
 		if $t.lookup("1"+@id[0])==:CONT
-			$e.push("ERROR CONTADOR")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
 		if $t.lookup(@id[0])==nil
-			$e.push("ERROR READ")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in read instruction, '"+@id[0].to_s+"' is not declared")
 		end
 	end
 end
@@ -243,7 +258,9 @@ class BODY_WRITE
 	end
 	def check
 		if @expr.get_type!=:CANV
-			$e.push("ERROR WRITE")
+			if @expr.get_type != nil
+				$e.push("Line: "+@expr.get_oper[1].to_s+", Column: "+@expr.get_oper[2].to_s+" write instruction expects type '@' but gets'"+@expr.get_type.to_s+"'")
+			end
 		end
 	end
 end
@@ -286,7 +303,7 @@ class IF_THEN
 	def check
 		@body.check
 		if @exp.get_type == nil
-			$e.push("ERROR IF THEN")
+			$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@exp.get_type.to_s+"'")
 		end
 	end
 end
@@ -318,7 +335,7 @@ class IF_THEN_ELSE
 		@body1.check
 		@body2.check
 		if @exp.get_type
-			$e.push("ERROR IF THEN ELSE")
+			$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@exp.get_type.to_s+"'")
 		end
 	end
 end
@@ -387,6 +404,9 @@ class DOUBLE_EXP
 		@expr2 = val3
 		@oper = val2
 	end
+	def get_oper
+		return @oper
+	end
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
@@ -402,35 +422,34 @@ class DOUBLE_EXP
 			if (tmp==:INT && tmp2==:INT)
 				return :INT
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:INT))
 				return nil
 			end
 		elsif @oper[0].match(/\/\\|\\\/|\^/)
 			if (tmp==:BOOL && tmp2==:BOOL)
 				return :BOOL
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:BOOL))
 				return nil
 			end
 		elsif @oper[0].match(/&|~/)
 			if (tmp==:CANV && tmp2==:CANV)
 				return :CANV
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:CANV))
 				return nil
 			end
 		elsif @oper[0].match(/<=|>=|<|>/)
 			if (tmp==:INT && tmp2==:INT)
 				return :BOOL
 			else
-				$e.push("ERROR EXP")
-				return nil
+				$e.push(print_error(@oper,:INT))
 			end
 		elsif @oper[0].match(/\=|\/=/)
 			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
-				$e.push("ERROR EXP")
+				$e.push("Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
 				return nil
 			end
 		end
@@ -455,14 +474,14 @@ class LEFT_EXP
 			if (tmp==:BOOL)
 				return :BOOL
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:BOOL))
 				return nil
 			end
 		elsif @oper[0].match(/'/)
 			if (tmp==:CANV)
 				return :CANV
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:CANV))
 				return nil
 			end
 		end
@@ -487,14 +506,14 @@ class RIGHT_EXP
 			if (tmp==:INT)
 				return :INT
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:INT))
 				return nil
 			end
 		elsif @oper[0].match(/$/)
 			if (tmp==:CANV)
 				return :CANV
 			else
-				$e.push("ERROR EXP")
+				$e.push(print_error(@oper,:CANV))
 				return nil
 			end
 		end
@@ -523,7 +542,7 @@ class ONE_COND_ITER
 	def check
 		@body.check
 		if @expr.get_type!=:BOOL
-			$e.push("ERROR ITER ONE")
+			$e.push("Line: "+@expr.get_oper[1].to_s+", Column: "+@expr.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@expr.get_type.to_s+"'")
 		end
 	end
 end
@@ -553,8 +572,10 @@ class ITER
 	end
 	def check
 		@body.check
-		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
-			$e.push("ERROR ITER TWO")
+		if !(@expr1.get_type==:INT)
+			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
+		elsif !(@expr2.get_type==:INT)
+			$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr2.get_type.to_s+"'")
 		end
 	end
 end
@@ -586,11 +607,13 @@ class ID_ITER
 		@body.to_s(pipe+1)
 	end
 	def check
-		if !(@expr1.get_type==:INT && @expr2.get_type==:INT)
-			$e.push("ERROR ITER ID")
+		if !(@expr1.get_type==:INT)
+			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
+		elsif !(@expr2.get_type==:INT)
+			$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr2.get_type.to_s+"'")
 		end
 		if $t.lookup("1"+@id[0])==:CONT
-			$e.push("ERROR CONTADOR")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
 		$t.insert("1"+@id[0],:CONT)
 		@body.check

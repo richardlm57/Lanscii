@@ -35,6 +35,21 @@ class SymbolTable
 		return nil
 	end
 	def to_s
-		puts @table
+		a=@table.to_a
+		a.to_s
+		for obj in a
+			if obj[1] == :BOOL
+				print "!"+obj[0]+" "
+			end
+			if obj[1] == :INT
+				print "%"+obj[0]+" "
+			end
+			if obj[1] == :CANV
+				print "@"+obj[0]+" "
+			end
+			if obj[1] == :CONT
+				print "%"+obj[0]+" "
+			end
+		end
 	end
 end
