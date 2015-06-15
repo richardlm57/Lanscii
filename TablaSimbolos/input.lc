@@ -1,6 +1,6 @@
 { %i @c !b|
 	(i ?
 		write b;
-		[h : i..i | write c - i; write n;read h]
+		[h | write c - i; write n;read h]
 	)
 }
