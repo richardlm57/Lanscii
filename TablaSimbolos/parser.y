@@ -34,7 +34,7 @@ start PROGRAM
 # Reglas de la gramática
 rule
 	PROGRAM
-		:	LCURLY DECLARE PIPE BODY RCURLY		{return PROGRAM_DECLARE_BODY.new(val[1],val[3])}
+		:	LCURLY DECLARE PIPE BODY RCURLY		{return PROGRAM_DECLARE_BODY.new(val[0],val[1],val[3])}
 		|	LCURLY BODY RCURLY					{return PROGRAM_BODY.new(val[1])}
 
 		# Tipos de las declaraciones
