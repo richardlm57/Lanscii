@@ -1,16 +1,6 @@
-{ %foo foo !h h @hola chao e|
-    ba = $h;
-    read a;
-    h = false;
-    {- asignar a foo el doble del valor de bar, más treinta y cinco;
-        si bar es mayor a dos -}
-    ( bar > 2 ?
-        foo = chao + bar * 2
-    );
-    {!a %b |
-    	a = false
-    };
-    hola=<|>;
-    e=$hola~foo;
-    [foo + foo | foo = 33]
+{ %i @c !b|
+	(i ?
+		write b;
+		[h : i..i | write c - i; write n;read h]
+	)
 }

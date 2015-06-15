@@ -54,7 +54,7 @@ rule
 		: 	ID EQUALS EXPR			{result = BODY_ASSIGN.new(val[0],val[2])}
 		| 	PROGRAM 				{result = BODY.new(val[0])}
 		|	READ ID 				{result = BODY_READ.new(val[1]) }
-		| 	WRITE EXPR				{result = BODY_WRITE.new(val[1]) }
+		| 	WRITE EXPR				{result = BODY_WRITE.new(val[0],val[1]) }
 		|	COND					{result = BODY.new(val[0])}
 		|	ITER					{result = BODY.new(val[0])}
 		|	BODY SEMICOLON BODY     {result = BODIES.new(val[0],val[2])}
