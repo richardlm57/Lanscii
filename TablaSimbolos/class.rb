@@ -634,7 +634,7 @@ end
 # Iteración con una expresión
 class ONE_COND_ITER
 	def initialize(val1,val2)
-		@expr = val1
+		@exp = val1
 		@body = val2
 	end
 
@@ -645,7 +645,7 @@ class ONE_COND_ITER
 		print_pipe(pipe)
 		pipe+=1
 		puts "CONDITION:" 
-		@expr.to_s(pipe)
+		@exp.to_s(pipe)
 		print_pipe(pipe-1)
 		puts "THEN:"
 		@body.to_s(pipe)
@@ -654,7 +654,7 @@ class ONE_COND_ITER
 	#Chequeo de tipos
 	def check
 		@body.check
-		t=@expr.get_type
+		t=@exp.get_type
 		if t!=:BOOL
 			if t == :INT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'")
