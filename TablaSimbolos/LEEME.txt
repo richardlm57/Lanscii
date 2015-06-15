@@ -15,7 +15,7 @@ almacenados en él que en un objeto Array, por ejemplo. En este Hash se guardan
 como claves los identificadores de las variables, y como valores se guardan el tipo 
 asociado a dicha variable. El chequeo de tipos se realiza sobre el AST construido en 
 el parseo de Lanscii (se modificó el class.rb donde están las clases que representan cada
-subárb. Para cada clase previamente definida como un subárbol del AST se 
+subárbol). Para cada clase previamente definida como un subárbol del AST se 
 definieron métodos, dependiendo de la operación que representaran: para el caso de las 
 declaraciones se definió el método insertId para insertar las variables en la tabla de 
 símbolos, para los cuerpos se definió el método check para la verificación de tipos, 
