@@ -21,7 +21,7 @@ end
 
 # Función para imprimir errores de tipo
 def print_error(oper,type)
-	if type == :INT
+	if type == :INT || type == :CONT
 		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'"
 	elsif type == :CANV
 		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '!'"
@@ -136,11 +136,10 @@ class MORE_IDENTS
 
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
-		if !($t.insert(@id[0],type))
+		if (($t.lookup(@id[0])==:CONT) || !($t.insert(@id[0],type)))
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
 		end
 		@next_inst.insertId(type)
-
 	end
 end
 
@@ -153,7 +152,7 @@ class IDENTS_DECLARE
 
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
-		if !($t.insert(@id[0],type))
+		if (($t.lookup(@id[0])==:CONT) || !($t.insert(@id[0],type)))
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
 		end
 		@declare.insertId()
@@ -169,8 +168,9 @@ class IDENTS_ID
 
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
-		$t.insert(@id[0],type)
-
+		if (($t.lookup(@id[0])==:CONT) || !($t.insert(@id[0],type)))
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
+		end
 	end
 end
 
@@ -200,7 +200,7 @@ class BODY_ASSIGN
 
 	#Chequeo de tipos
 	def check
-		if $t.lookup("1"+@id[0])==:CONT
+		if $t.lookup(@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
 		tmp=$t.lookup(@id[0])
@@ -210,7 +210,9 @@ class BODY_ASSIGN
 			tmp2=@exp.get_type
 			if tmp2!=nil
 				if tmp!=tmp2
+					if !((tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT))
 					$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+tmp.to_s+"' type is incompatible with '"+tmp2.to_s+"'")
+					end
 				end
 			end
 		end
@@ -252,7 +254,7 @@ class BODY_READ
 
 	#Chequeo de tipos
 	def check
-		if $t.lookup("1"+@id[0])==:CONT
+		if $t.lookup(@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
 		if $t.lookup(@id[0])==nil
@@ -480,7 +482,7 @@ class DOUBLE_EXP
 		tmp2=@expr2.get_type
 		if @oper[0].match(/\+|\-|\*|\/|%/)
 
-			if (tmp==:INT && tmp2==:INT)
+			if (tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)
 				return :INT
 			else
 				$e.push(print_error(@oper,:INT))
@@ -501,13 +503,13 @@ class DOUBLE_EXP
 				return nil
 			end
 		elsif @oper[0].match(/<=|>=|<|>/)
-			if (tmp==:INT && tmp2==:INT)
+			if (tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)
 				return :BOOL
 			else
 				$e.push(print_error(@oper,:INT))
 			end
 		elsif @oper[0].match(/\=|\/=/)
-			if (tmp==:INT && tmp2==:INT) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
+			if ((tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
 				$e.push("Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
@@ -664,11 +666,13 @@ end
 
 # Iteración con contador
 class ID_ITER
-	def initialize(val1,val2,val3,val4)
+	def initialize(val0,val1,val2,val3,val4)
+		@lsquare = val0
 		@id = val1
 		@expr1 = val2
 		@expr2 = val3
 		@body = val4
+		@table = $t
 	end
 
 	def to_s(pipe)
@@ -689,18 +693,30 @@ class ID_ITER
 	end
 
 	#Chequeo de tipos
-	def check
+	def check	
 		if !(@expr1.get_type==:INT)
 			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
 		elsif !(@expr2.get_type==:INT)
 			$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr2.get_type.to_s+"'")
 		end
-		if $t.lookup("1"+@id[0])==:CONT
+		if $t.lookup(@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
 		end
-		$t.insert("1"+@id[0],:CONT)
-		@body.check
-		$t.delete("1"+@id[0])	
+		if $t.table != {}
+			@table = SymbolTable.new
+			@table.father = $t
+			$t = @table
+		end
+		$t.insert(@id[0],:CONT)
+		print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
+		$t.to_s
+		puts ""	
+		@body.check	
+		if $t.father != nil
+			$t = $t.father
+		else
+			return $e
+		end
 	end
 end
 

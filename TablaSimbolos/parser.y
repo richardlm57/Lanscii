@@ -68,7 +68,7 @@ rule
 	ITER	
 		: 	LSQUARE EXPR PIPE BODY RSQUARE       {result = ONE_COND_ITER.new(val[1],val[3])}
 		|	LSQUARE EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ITER.new(val[1],val[3],val[5])}
-		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_ITER.new(val[1],val[3],val[5],val[7])}
+		|	LSQUARE ID COLON EXPR DOUBLEDOT EXPR PIPE BODY RSQUARE {result = ID_ITER.new(val[0],val[1],val[3],val[5],val[7])}
 
 		# Expresiones
 	EXPR	
