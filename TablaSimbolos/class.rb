@@ -51,7 +51,7 @@ class PROGRAM_DECLARE_BODY
 		@declare.insertId
 		if $e == []
 			print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
-			$a.push($t.to_s)
+			$t.to_s
 			puts ""
 		end
 		@body.check
@@ -779,7 +779,7 @@ class ID_ITER
 		$t.insert(@id[0],:CONT)
 		if $e == []
 			print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
-			$a.push($t.to_s)
+			$t.to_s
 			puts ""
 		end
 		@body.check	

@@ -30,9 +30,6 @@ archivos y el chequeo de tipos funcionó sin ningún inconveniente.
 
 	Problemas presentes
 
-Hay tablas de símbolos que se imprimen cuando no deben imprimirse porque hay errores (se
-imprimen después de las tablas de símbolos)
-
 	Cualquier comentario respecto al proyecto que consideren necesario
 
 Nuevamente, se tenía pensado crear una clase Token para poder almacenar el símbolo, 
