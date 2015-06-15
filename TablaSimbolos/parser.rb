@@ -532,7 +532,7 @@ module_eval(<<'.,.,', 'parser.y', 55)
 
 module_eval(<<'.,.,', 'parser.y', 56)
   def _reduce_12(val, _values, result)
-    result = BODY_WRITE.new(val[1]) 
+    result = BODY_WRITE.new(val[0],val[1]) 
     result
   end
 .,.,

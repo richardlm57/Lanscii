@@ -254,8 +254,7 @@ class BODY_READ
 	def check
 		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
-		end
-		if $t.lookup(@id[0])==nil
+		elsif $t.lookup(@id[0])==nil
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in read instruction, '"+@id[0].to_s+"' is not declared")
 		end
 	end
@@ -263,7 +262,8 @@ end
 
 # Write
 class BODY_WRITE
-	def initialize(val1)
+	def initialize(write,val1)
+		@oper = write
 		@expr = val1
 	end
 
@@ -276,10 +276,15 @@ class BODY_WRITE
 
 	#Chequeo de tipos
 	def check
-		if @expr.get_type!=:CANV
-			if @expr.get_type != nil
-				$e.push("Line: "+@expr.get_oper[1].to_s+", Column: "+@expr.get_oper[2].to_s+" write instruction expects type '@' but gets'"+@expr.get_type.to_s+"'")
-			end
+		t=@expr.get_type
+		if t!=:CANV
+				if t == :BOOL
+					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '!'")
+				elsif t == :INT
+					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '%'")
+				elsif t == false
+					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared")
+				end
 		end
 	end
 end
@@ -325,8 +330,15 @@ class IF_THEN
 	#Chequeo de tipos
 	def check
 		@body.check
-		if @exp.get_type == nil
-			$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@exp.get_type.to_s+"'")
+		t=@exp.get_type
+		if t != :BOOL
+			if t == :INT
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
+			elsif t == :CANV
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
+			elsif t == false
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
 		end
 	end
 end
@@ -359,8 +371,15 @@ class IF_THEN_ELSE
 	def check
 		@body1.check
 		@body2.check
-		if @exp.get_type
-			$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@exp.get_type.to_s+"'")
+		t=@exp.get_type
+		if t != :BOOL
+			if t == :INT
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
+			elsif t == :CANV
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
+			elsif t == false
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
 		end
 	end
 end
@@ -391,6 +410,10 @@ class EXP_ID
 		@id = val
 	end
 
+	def id
+		return @id
+	end
+
 	def to_s(pipe)
 		print_pipe(pipe)
 		puts 'IDENTIFIER: ' + @id[0].to_s
@@ -398,7 +421,12 @@ class EXP_ID
 
 	# Función para obtener el tipo de la expresión
 	def get_type
-		return $t.lookup(@id[0])
+		t=$t.lookup(@id[0])
+		if  t != nil
+			return $t.lookup(@id[0])
+		else
+			return false
+		end
 	end
 
 	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
@@ -620,8 +648,15 @@ class ONE_COND_ITER
 	#Chequeo de tipos
 	def check
 		@body.check
-		if @expr.get_type!=:BOOL
-			$e.push("Line: "+@expr.get_oper[1].to_s+", Column: "+@expr.get_oper[2].to_s+" conditional instruction expects type '!' but gets'"+@expr.get_type.to_s+"'")
+		t=@expr.get_type
+		if t!=:BOOL
+			if t == :INT
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'")
+			elsif t == :CANV
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'")
+			elsif t == false
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
 		end
 	end
 end
@@ -653,10 +688,24 @@ class ITER
 	#Chequeo de tipos
 	def check
 		@body.check
-		if !(@expr1.get_type==:INT)
-			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
-		elsif !(@expr2.get_type==:INT)
-			$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr2.get_type.to_s+"'")
+		t1=@expr1.get_type
+		t2=@expr2.get_type
+		if t1!=:INT
+			if t1 == :BOOL
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+			elsif t1 == :CANV
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+			elsif t1 == false
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
+			end
+		elsif t2!=:INT
+			if t2 == :BOOL
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+			elsif t2 == :CANV
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+			elsif t2 == false
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
+			end
 		end
 	end
 end
@@ -690,10 +739,24 @@ class ID_ITER
 
 	#Chequeo de tipos
 	def check
-		if !(@expr1.get_type==:INT)
-			$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr1.get_type.to_s+"'")
-		elsif !(@expr2.get_type==:INT)
-			$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" conditional instruction expects type '%' but gets'"+@expr2.get_type.to_s+"'")
+		t1=@expr1.get_type
+		t2=@expr2.get_type
+		if t1!=:INT
+			if t1 == :BOOL
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+			elsif t1 == :CANV
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+			elsif t1 == false
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
+			end
+		elsif t2!=:INT
+			if t2 == :BOOL
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+			elsif t2 == :CANV
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+			elsif t2 == false
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
+			end
 		end
 		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
