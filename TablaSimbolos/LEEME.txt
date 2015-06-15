@@ -1,0 +1,44 @@
+Universidad Simón Bolívar
+Departamento de Computación y Tecnología de la Información
+CI3725 - Traductores e Interpretadores
+
+LEEME.txt
+
+Autores: Richard Lares 11-10508
+		 Oscar Guillen 11-11264
+
+	Decisiones de implementación
+
+Para construir la tabla de símbolos del lenguaje Lanscii se decidió usar un objeto 
+Hash de Ruby, sobre el cual es más eficiente realizar recorridos y encontrar elementos
+almacenados en él que en un objeto Array, por ejemplo. En este Hash se guardan 
+como claves los identificadores de las variables, y como valores se guardan el tipo 
+asociado a dicha variable. El chequeo de tipos se realiza sobre el AST construido en 
+el parseo de Lanscii (se modificó el class.rb donde están las clases que representan cada
+subárb. Para cada clase previamente definida como un subárbol del AST se 
+definieron métodos, dependiendo de la operación que representaran: para el caso de las 
+declaraciones se definió el método insertId para insertar las variables en la tabla de 
+símbolos, para los cuerpos se definió el método check para la verificación de tipos, 
+para las expresiones se definió el método get_type para obtener el tipo de dicha expresión. 
+De esta forma, tanto la construcción de la tabla de símbolos como el chequeo de tipos se 
+hacen en el AST, una vez construido con el parsing. 
+
+	Estado actual del proyecto
+
+Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos 
+archivos y el chequeo de tipos funcionó sin ningún inconveniente. 
+
+	Problemas presentes
+
+
+	Cualquier comentario respecto al proyecto que consideren necesario
+
+Nuevamente, se tenía pensado crear una clase Token para poder almacenar el símbolo, 
+el valor del token y la fila y columna donde fue encontrado, sin embargo no se encontró 
+la forma de que RACC no tuviera problema con recibir un arreglo con elementos de
+esta clase. Esta vez, en lugar de pasar sólo el valor del token, se usó un arreglo cuya
+posición 0 es el valor, la posición 1 es la fila donde fue encontrado y la posición 2
+es la columna. Es una solución menos elegante pero RACC no tenía problemas al recibir
+este arreglo, y puede ser usado tanto en el parser como en el AST para imprimir líneas
+y columnas en cade esta forma se pudo imprimir errores sintácticos o de chequeo de tipos
+indicando la fila y la columna.

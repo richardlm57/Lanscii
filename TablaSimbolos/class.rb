@@ -592,7 +592,6 @@ class ID_ITER
 		if $t.lookup("1"+@id[0])==:CONT
 			$e.push("ERROR CONTADOR")
 		end
-		puts "Estoy aqui"
 		$t.insert("1"+@id[0],:CONT)
 		@body.check
 		$t.delete("1"+@id[0])	
