@@ -49,9 +49,11 @@ class PROGRAM_DECLARE_BODY
 			$t = @table
 		end
 		@declare.insertId
-		print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
-		$a.push($t.to_s)
-		puts ""
+		if $e == []
+			print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
+			$a.push($t.to_s)
+			puts ""
+		end
 		@body.check
 
 		if $t.father != nil
@@ -775,9 +777,11 @@ class ID_ITER
 			$t = @table
 		end
 		$t.insert(@id[0],:CONT)
-		print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
-		$a.push($t.to_s)
-		puts ""	
+		if $e == []
+			print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
+			$a.push($t.to_s)
+			puts ""
+		end
 		@body.check	
 		if $t.father != nil
 			$t = $t.father
