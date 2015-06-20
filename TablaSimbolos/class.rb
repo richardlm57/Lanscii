@@ -288,7 +288,7 @@ class BODY_WRITE
 		if t!=:CANV
 				if t == :BOOL
 					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '!'")
-				elsif t == :INT
+				elsif t == :INT or t == :CONT
 					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '%'")
 				elsif t == false
 					$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared")
@@ -340,7 +340,7 @@ class IF_THEN
 		@body.check
 		t=@exp.get_type
 		if t != :BOOL
-			if t == :INT
+			if t == :INT or t == :CONT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
@@ -381,7 +381,7 @@ class IF_THEN_ELSE
 		@body2.check
 		t=@exp.get_type
 		if t != :BOOL
-			if t == :INT
+			if t == :INT or t == :CONT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
@@ -616,7 +616,7 @@ class RIGHT_EXP
 	def get_type
 		tmp=@expr.get_type
 		if @oper[0].match(/-/)
-			if (tmp==:INT)
+			if (tmp==:INT or tmp==:CONT)
 				return :INT
 			else
 				$e.push(print_error(@oper,:INT))
@@ -658,7 +658,7 @@ class ONE_COND_ITER
 		@body.check
 		t=@exp.get_type
 		if t!=:BOOL
-			if t == :INT
+			if t == :INT or t == :CONT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'")
@@ -698,7 +698,7 @@ class ITER
 		@body.check
 		t1=@expr1.get_type
 		t2=@expr2.get_type
-		if t1!=:INT
+		if t1!=:INT and t1!=:CONT
 			if t1 == :BOOL
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t1 == :CANV
@@ -706,7 +706,7 @@ class ITER
 			elsif t1 == false
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
 			end
-		elsif t2!=:INT
+		elsif t2!=:INT and t2!=:CONT
 			if t2 == :BOOL
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t2 == :CANV
@@ -751,7 +751,7 @@ class ID_ITER
 	def check
 		t1=@expr1.get_type
 		t2=@expr2.get_type
-		if t1!=:INT
+		if t1!=:INT and t1!=:CONT
 			if t1 == :BOOL
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t1 == :CANV
@@ -759,7 +759,7 @@ class ID_ITER
 			elsif t1 == false
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
 			end
-		elsif t2!=:INT
+		elsif t2!=:INT and t2!=:CONT
 			if t2 == :BOOL
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t2 == :CANV
