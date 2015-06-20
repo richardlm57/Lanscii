@@ -11,6 +11,7 @@
 
 =end
 
+# FUncion para buscar canvas con espacio perdido por el split a la linea.
 def find_canvas(a)
 	i = 0
 	while (i < a.size - 1) do
@@ -83,7 +84,7 @@ class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un arch
 		content.each_line do |x|	# Se itera por las líneas del archivo reconociendo símbolos (o errores)
 			j=0		# Contador de columna
 			s=x.split
-			s=find_canvas(s)
+			s=find_canvas(s) # En busca del canvas con espacio
 			canvs = false
 			s.each do |t| # Se itera por el split de la línea para matchear con la regex del lenguaje
 				while x[j]!=t[0] do
