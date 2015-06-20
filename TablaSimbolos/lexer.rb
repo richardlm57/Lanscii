@@ -11,6 +11,32 @@
 
 =end
 
+def find_canvas(a)
+	i = 0
+	while (i < a.size - 1) do
+		tam1 = a[i].size-1
+		if a[i][tam1] == "<" and a[i+1][0] == ">"
+			if a[i] == "<" and a[i+1] == ">" 
+				a[i] = "< >"
+				a.delete_at(i+1)
+			elsif a[i] == "<" and a[i+1] != ">"
+				a[i] = "< >"
+				a[i+1] = a[i+1].delete(">")
+			elsif a[i] != "<" and a[i+1] != ">"
+				a[i] = a[i].delete("<")
+				a[i+1] = a[i+1].delete(">")
+				a.insert(i+1,"< >")
+			elsif a[i] != "<" and a[i+1] == ">"
+				a[i] = a[i].delete("<")
+				a[i+1] = "< >"
+			end
+		end
+		i+=1
+	end
+	return a
+
+end
+
 class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un archivo
 	def initialize(f)
 		@file=f
@@ -57,6 +83,8 @@ class Lexer			# Clase Lexer para realizar el análisis lexicográfico de un arch
 		content.each_line do |x|	# Se itera por las líneas del archivo reconociendo símbolos (o errores)
 			j=0		# Contador de columna
 			s=x.split
+			s=find_canvas(s)
+			canvs = false
 			s.each do |t| # Se itera por el split de la línea para matchear con la regex del lenguaje
 				while x[j]!=t[0] do
 					j+=1
