@@ -254,8 +254,33 @@ class BODY_READ
 		t=$st.lookup(@id[0])
 		if t==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
+		elsif t==:CANV
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible read a canvas, '"+@id[0].to_s+"' is a canvas")
 		elsif t==nil
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in read instruction, '"+@id[0].to_s+"' is not declared")
+		else
+			matchs=false
+			while !matchs
+				tmp=gets.chomp
+				if tmp.match(/[0-9]+/)
+					if t==:BOOL
+						puts "Invalid value, please enter a value again"
+					else
+						$vt[@id[0]]=[tmp,0,0]
+						mathcs=true
+					end
+				elsif tmp.match(/true|false/)
+					if t==:INT
+						puts "Invalid value, please enter a value again"
+					else
+						$vt[@id[0]]=[tmp,0,0]
+						mathcs=true
+					end
+				else
+					puts "Invalid value, please enter a value again"
+				end
+			end
+			#print tmp.get_value
 		end
 	end
 end
@@ -282,7 +307,7 @@ class BODY_WRITE
 				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '!'")
 			elsif t == :INT or t == :CONT
 				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '%'")
-			elsif t == false
+			elsif t == nil
 				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared")
 			end
 		end
@@ -345,15 +370,18 @@ class IF_THEN
 
 	#Chequeo de tipos
 	def check
-		@body.check
 		t=@exp.get_type
 		if t != :BOOL
 			if t == :INT or t == :CONT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
-			elsif t == false
+			elsif t == nil
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
+		else
+			if @exp.get_value.match(/true/)	
+				@body.check
 			end
 		end
 	end
@@ -385,16 +413,20 @@ class IF_THEN_ELSE
 
 	#Chequeo de tipos
 	def check
-		@body1.check
-		@body2.check
 		t=@exp.get_type
 		if t != :BOOL
 			if t == :INT or t == :CONT
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
-			elsif t == false
+			elsif t == nil
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
+		else
+			if @exp.get_value.match(/true/)
+				@body1.check
+			elsif @exp.get_value.match(/false/)				
+				@body2.check
 			end
 		end
 	end
@@ -429,7 +461,7 @@ class ONE_COND_ITER
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'")
 			elsif t == :CANV
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'")
-			elsif t == false
+			elsif t == nil
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
 			end
 		end
@@ -470,7 +502,7 @@ class ITER
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t1 == :CANV
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
-			elsif t1 == false
+			elsif t1 == nil
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
 			end
 		elsif t2!=:INT and t2!=:CONT
@@ -478,7 +510,7 @@ class ITER
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t2 == :CANV
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
-			elsif t2 == false
+			elsif t2 == nil
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
 			end
 		end
@@ -523,7 +555,7 @@ class ID_ITER
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t1 == :CANV
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
-			elsif t1 == false
+			elsif t1 == nil
 				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
 			end
 		elsif t2!=:INT and t2!=:CONT
@@ -531,7 +563,7 @@ class ID_ITER
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
 			elsif t2 == :CANV
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
-			elsif t2 == false
+			elsif t2 == nil
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
 			end
 		end
@@ -613,7 +645,7 @@ class EXP_ID
 		if  t != nil
 			return t
 		end
-		return false
+		return nil
 	end
 
 	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
@@ -714,11 +746,6 @@ class DOUBLE_EXP
 		@oper = val2
 	end
 
-	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
-	def get_oper
-		return @oper
-	end
-
 	def to_s(pipe)
 		print_pipe(pipe)
 		pipe+=1
@@ -727,29 +754,40 @@ class DOUBLE_EXP
 		@expr2.to_s(pipe)
 	end
 
+	# Función para obtener el valor de la expresión
+	def get_value
+		tmp=@expr1.get_value
+		tmp2=@expr2.get_value
+		if tmp && tmp2
+			if @oper[0].match(/\/\\/)
+				return (eval(tmp) && eval(tmp2)).to_s
+			elsif @oper[0].match(/\\\//)
+				return (eval(tmp) || eval(tmp2)).to_s
+			elsif @oper[0].match(/~/)
+				return (eval(tmp) + eval(tmp2)).to_s
+			elsif @oper[0].match(/\+|\-|\*|\/|%|<=|>=|<|>/)
+				ec=tmp+@oper[0]+tmp2
+				#puts ec
+				return eval(ec).to_s
+			elsif @oper[0].match(/\=/)
+				return (eval(tmp) == eval(tmp2)).to_s
+			elsif @oper[0].match(/\/=/)
+				return (eval(tmp) != eval(tmp2)).to_s
+			end	
+			#elsif @oper[0].match(/&/)
+		end
+		return tmp
+	end
+
 	# Función para obtener el tipo de la expresión
 	def get_type
 		tmp=@expr1.get_type
 		tmp2=@expr2.get_type
-		if @oper[0].match(/\+|\-|\*|\/|%/)
-			if (tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)
-				return :INT
-			else
-				$e.push(print_error(@oper,:INT))
-				return nil
-			end
-		elsif @oper[0].match(/\/\\|\\\/|\^/)
+		if @oper[0].match(/\/\\|\\\//)
 			if (tmp==:BOOL && tmp2==:BOOL)
 				return :BOOL
 			else
 				$e.push(print_error(@oper,:BOOL))
-				return nil
-			end
-		elsif @oper[0].match(/&|~/)
-			if (tmp==:CANV && tmp2==:CANV)
-				return :CANV
-			else
-				$e.push(print_error(@oper,:CANV))
 				return nil
 			end
 		elsif @oper[0].match(/<=|>=|<|>/)
@@ -766,7 +804,26 @@ class DOUBLE_EXP
 				$e.push("Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
 				return nil
 			end
+		elsif @oper[0].match(/\+|\-|\*|\/|%/)
+			if (tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)
+				return :INT
+			else
+				$e.push(print_error(@oper,:INT))
+				return nil
+			end
+		elsif @oper[0].match(/&|~/)
+			if (tmp==:CANV && tmp2==:CANV)
+				return :CANV
+			else
+				$e.push(print_error(@oper,:CANV))
+				return nil
+			end
 		end
+	end
+
+	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
+	def get_oper
+		return @oper
 	end
 end
 
@@ -786,8 +843,14 @@ class LEFT_EXP
 
 	# Función para obtener el valor de la expresión
 	def get_value
-		
-		return @expr.get_value
+		tmp=@expr.get_value
+		if tmp
+			if @oper[0].match(/\^/)
+				return eval("!(@expr.get_value)").to_s
+			end
+			#elsif @oper[0].match(/'/)
+		end
+		return tmp
 	end
 
 	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
@@ -832,7 +895,14 @@ class RIGHT_EXP
 
 	# Función para obtener el valor de la expresión
 	def get_value
-		return @expr.get_value
+		tmp=@expr.get_value
+		if tmp
+			if @oper[0].match(/-/)
+				return eval("-(@expr.get_value)").to_s
+			end
+			#elsif @oper[0].match(/$/)
+		end
+		return tmp
 	end
 	# Función para obtener el operador de la expresión (si hay, si no se obtiene identificador o valor)
 	def get_oper
