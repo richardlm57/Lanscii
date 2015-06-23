@@ -11,7 +11,6 @@
 require './symboltable'
 $st=SymbolTable.new
 $vt=Hash.new
-$a=Array.new
 $e=Array.new
 
 # Funcion para imprimir pipes.
@@ -454,7 +453,6 @@ class ONE_COND_ITER
 
 	#Chequeo de tipos
 	def check
-		@body.check
 		t=@exp.get_type
 		if t!=:BOOL
 			if t == :INT or t == :CONT
@@ -463,6 +461,13 @@ class ONE_COND_ITER
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'")
 			elsif t == nil
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+			end
+		else
+			if @exp.get_value.match(/true/)	
+				while true
+					@body.check
+					# puts $vt
+				end
 			end
 		end
 	end
@@ -494,7 +499,6 @@ class ITER
 
 	#Chequeo de tipos
 	def check
-		@body.check
 		t1=@expr1.get_type
 		t2=@expr2.get_type
 		if t1!=:INT and t1!=:CONT
@@ -512,6 +516,10 @@ class ITER
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
 			elsif t2 == nil
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
+			end
+		else
+			[@expr2.get_value.to_i-@expr1.get_value.to_i,0].max.times do 
+				@body.check	
 			end
 		end
 	end
@@ -566,29 +574,33 @@ class ID_ITER
 			elsif t2 == nil
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
 			end
-		end
-		if $st.lookup(@id[0])==:CONT
+		elsif $st.lookup(@id[0])==:CONT
 			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
-		end
-		if $st.table != {}
-			@table = SymbolTable.new
-			@table.father = $st
-			$st = @table
-		end
-		$st.insert(@id[0],:CONT)
-		if $e == []
-			print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
-			$st.to_s
-			puts ""
-		end
-		@body.check	
-		if $st.father != nil
-			$st = $st.father
 		else
-			if $e==[]
-				return $a
+			if $st.table != {}
+				@table = SymbolTable.new
+				@table.father = $st
+				$st = @table
 			end
-			return $e
+			$st.insert(@id[0],:CONT)
+			if $e == []
+				print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
+				$st.to_s
+				puts ""
+			end
+			$vt[@id[0]]=@expr1.get_value
+			[@expr2.get_value.to_i-@expr1.get_value.to_i,0].max.times do 
+				@body.check
+				tmp=$vt[@id[0]]
+				$vt[@id[0]]=(tmp.to_i+1).to_s
+				puts $vt
+			end
+			$vt.delete(@id[0])
+			if $st.father != nil
+				$st = $st.father
+			else
+				return $e
+			end
 		end
 	end
 end
@@ -846,7 +858,7 @@ class LEFT_EXP
 		tmp=@expr.get_value
 		if tmp
 			if @oper[0].match(/\^/)
-				return eval("!(@expr.get_value)").to_s
+				return (!eval(tmp)).to_s
 			end
 			#elsif @oper[0].match(/'/)
 		end
@@ -898,7 +910,7 @@ class RIGHT_EXP
 		tmp=@expr.get_value
 		if tmp
 			if @oper[0].match(/-/)
-				return eval("-(@expr.get_value)").to_s
+				return (-eval(tmp)).to_s
 			end
 			#elsif @oper[0].match(/$/)
 		end
