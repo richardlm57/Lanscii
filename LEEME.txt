@@ -1,0 +1,29 @@
+Universidad Simón Bolívar
+Departamento de Computación y Tecnología de la Información
+CI3725 - Traductores e Interpretadores
+
+LEEME.txt
+
+Autores: Richard Lares 11-10508
+		 Oscar Guillen 11-11264
+
+	Decisiones de implementación
+
+Para culminar con el intérprete de Lanscii, esta función se hizo dentro del chequeo de tipos 
+(justo después cuando se realiza el chequeo) en lugar de hacer una función distinta; esto para
+no interpretar cuando el chequeo terminara y, por ejemplo, tener que agregar identificadores a 
+los alcances para posteriormente, cuando se realizara la interpretación del programa, determinar 
+la tabla de símbolos correspondiente a cada bloque. Las subexpresiones más elementales cuentan
+con una función get_value, que devuelve el valor de dicha expresión; en caso de ser operaciones,
+devuelve la evaluación de la expresión.
+
+	Estado actual del proyecto
+
+Actualmente el proyecto funciona correctamente. Se hicieron pruebas con diversos 
+archivos y el chequeo de tipos funcionó sin ningún inconveniente. 
+
+	Problemas presentes
+
+	Cualquier comentario respecto al proyecto que consideren necesario
+
+Las funciones están en el class.rb

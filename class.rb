@@ -12,6 +12,7 @@ require './symboltable'
 $st=SymbolTable.new
 $vt=Hash.new
 $e=Array.new
+$write=Array.new
 
 # Funcion para imprimir pipes.
 def print_pipe(pipe)
@@ -23,11 +24,11 @@ end
 # Función para imprimir errores de tipo
 def print_error(oper,type)
 	if type == :INT || type == :CONT
-		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'"
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '@' and '!'\n"
 	elsif type == :CANV
-		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '!'"
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '!'\n"
 	else
-		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '@'"
+		return "Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" operator '"+oper[0].to_s+"' doesn't work with types '%' and '@'\n"
 	end
 end
 
@@ -61,17 +62,19 @@ class PROGRAM_DECLARE_BODY
 			$st = @table
 		end
 		@declare.insertId
-		if $e == []
-			print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
-			$st.to_s
-			puts ""
-		end
+	
+		#if $e == []
+		#	print "In line "+@curly[1].to_s+", column "+@curly[2].to_s+": "
+		#	$st.to_s
+		#	puts ""
+		#end
+		
 		@body.check
 		if $st.father != nil
 			$st = $st.father
 		else
 			if $e==[]
-				return $vt
+				return $write
 			end
 			return $e
 		end
@@ -154,7 +157,7 @@ class MORE_IDENTS
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		if (($st.lookup(@id[0])==:CONT) || !($st.insert(@id[0],type)))
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared\n")
 		end
 		@next_inst.insertId(type)
 	end
@@ -170,7 +173,7 @@ class IDENTS_DECLARE
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		if (($st.lookup(@id[0])==:CONT) || !($st.insert(@id[0],type)))
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared\n")
 		end
 		@declare.insertId()
 
@@ -186,7 +189,7 @@ class IDENTS_ID
 	# Función para insertar variables en la tabla de símbolos
 	def insertId(type)
 		if (($st.lookup(@id[0])==:CONT) || !($st.insert(@id[0],type)))
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+", '"+@id[0].to_s+"' is already declared\n")
 		end
 	end
 end
@@ -220,25 +223,33 @@ class BODY_ASSIGN
 		noe=true
 		tmp=$st.lookup(@id[0])
 		if tmp==:CONT
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter\n")
 			noe=false
 		end
 		if tmp == nil
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+@id[0].to_s+"' is not declared")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+@id[0].to_s+"' is not declared\n")
 			noe=false
 		else
 			tmp2=@exp.get_type
 			if tmp2!=nil
 				if tmp!=tmp2
 					if !((tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT))
-					$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+tmp.to_s+"' type is incompatible with '"+tmp2.to_s+"'")
+					$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in assignment, '"+tmp.to_s+"' type is incompatible with '"+tmp2.to_s+"'\n")
 					noe=false
 					end
+				end
+				if (tmp2==:INT || tmp2==:CONT)
+					if (@exp.get_value.to_i>2147483646 || @exp.get_value.to_i<-2147483646)
+					$e.push("Overflow\n")
+					noe=false
+				end
 				end
 			end
 		end
 		if noe
-			$vt[@id[0]]=@exp.get_value
+			if @exp.get_value
+				$vt[@id[0]]=@exp.get_value
+			end
 		end
 	end
 end
@@ -264,11 +275,11 @@ class BODY_READ
 	def check
 		t=$st.lookup(@id[0])
 		if t==:CONT
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter\n")
 		elsif t==:CANV
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible read a canvas, '"+@id[0].to_s+"' is a canvas")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible read a canvas, '"+@id[0].to_s+"' is a canvas\n")
 		elsif t==nil
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in read instruction, '"+@id[0].to_s+"' is not declared")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" in read instruction, '"+@id[0].to_s+"' is not declared\n")
 		else
 			matchs=false
 			while !matchs
@@ -316,19 +327,19 @@ class BODY_WRITE
 		t=@expr.get_type
 		if t!=:CANV
 			if t == :BOOL
-				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '!'")
+				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '!'\n")
 			elsif t == :INT or t == :CONT
-				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '%'")
+				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" write instruction expects type '@' but gets '%'\n")
 			elsif t == nil
-				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared")
+				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared\n")
 			end
 		end
 		canvas=@expr.get_value
 		for i in 0..canvas.length-1
 			for j in 0..canvas[0].length-1
-				print canvas[i][j]
+				$write.push(canvas[i][j])
 			end
-			puts ""
+			$write.push("\n")
 		end
 	end
 end
@@ -392,11 +403,11 @@ class IF_THEN
 		t=@exp.get_type
 		if t != :BOOL
 			if t == :INT or t == :CONT
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'\n")
 			elsif t == :CANV
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'\n")
 			elsif t == nil
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared\n")	
 			end
 		else
 			if @exp.get_value.match(/true/)	
@@ -435,11 +446,11 @@ class IF_THEN_ELSE
 		t=@exp.get_type
 		if t != :BOOL
 			if t == :INT or t == :CONT
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '%'\n")
 			elsif t == :CANV
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" conditional instruction expects type '!' but gets '@'\n")
 			elsif t == nil
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared\n")	
 			end
 		else
 			if @exp.get_value.match(/true/)
@@ -476,11 +487,11 @@ class ONE_COND_ITER
 		t=@exp.get_type
 		if t!=:BOOL
 			if t == :INT or t == :CONT
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '%'\n")
 			elsif t == :CANV
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'")
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" iteration instruction expects type '!' but gets '@'\n")
 			elsif t == nil
-				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared\n")	
 			end
 		else
 			if @exp.get_value.match(/true/)	
@@ -523,19 +534,19 @@ class ITER
 		t2=@expr2.get_type
 		if t1!=:INT and t1!=:CONT
 			if t1 == :BOOL
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'\n")
 			elsif t1 == :CANV
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'\n")
 			elsif t1 == nil
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared\n")	
 			end
 		elsif t2!=:INT and t2!=:CONT
 			if t2 == :BOOL
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'\n")
 			elsif t2 == :CANV
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'\n")
 			elsif t2 == nil
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared\n")	
 			end
 		else
 			[@expr2.get_value.to_i-@expr1.get_value.to_i+1,0].max.times do 
@@ -580,22 +591,22 @@ class ID_ITER
 		t2=@expr2.get_type
 		if t1!=:INT and t1!=:CONT
 			if t1 == :BOOL
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'\n")
 			elsif t1 == :CANV
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'\n")
 			elsif t1 == nil
-				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@expr1.get_oper[1].to_s+", Column: "+@expr1.get_oper[2].to_s+" '"+@expr1.id[0].to_s+"' is not declared\n")	
 			end
 		elsif t2!=:INT and t2!=:CONT
 			if t2 == :BOOL
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'")
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '!'\n")
 			elsif t2 == :CANV
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'")
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" iteration instruction expects type '%' but gets '@'\n")
 			elsif t2 == nil
-				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
+				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared\n")	
 			end
 		elsif $st.lookup(@id[0])==:CONT
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" not possible modify a counter, '"+@id[0].to_s+"' is a counter\n")
 		else
 			if $st.table != {}
 				@table = SymbolTable.new
@@ -603,11 +614,11 @@ class ID_ITER
 				$st = @table
 			end
 			$st.insert(@id[0],:CONT)
-			if $e == []
-				print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
-				$st.to_s
-				puts ""
-			end
+			#if $e == []
+			#	print "In line "+@lsquare[1].to_s+", column "+@lsquare[2].to_s+": "
+			#	$st.to_s
+			#	puts ""
+			#end
 			$vt[@id[0]]=@expr1.get_value
 			[@expr2.get_value.to_i-@expr1.get_value.to_i+1,0].max.times do 
 				@body.check
@@ -666,7 +677,7 @@ class EXP_ID
 	def get_value
 		res=$vt[@id[0]]
 		if res==nil
-			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" '"+@id[0]+"' is not been initialized")
+			$e.push("Line: "+@id[1].to_s+", Column: "+@id[2].to_s+" '"+@id[0]+"' is not been initialized\n")
 		end
 		return res
 	end
@@ -829,7 +840,7 @@ class DOUBLE_EXP
 					else
 						error="Line: "+@expr1[1].to_s+", Column: "+@expr1[2].to_s+" Incompatible Canvas Horizontal Concatenation "
 						error+="("+@expr1[0]+": "+tmp.length.to_s+"*"+tmp.length.to_s+", "
-						error+="("+@expr2[0]+": "+tmp2.length.to_s+"*"+tmp2.length.to_s+")"
+						error+="("+@expr2[0]+": "+tmp2.length.to_s+"*"+tmp2.length.to_s+")\n"
 						$e.push(error)
 					end
 				else
@@ -840,8 +851,16 @@ class DOUBLE_EXP
 					end
 				end
 			elsif @oper[0].match(/\+|\-|\*|\/|%|<=|>=|<|>/)
-				ec=tmp+@oper[0]+tmp2
-				return eval(ec).to_s
+				if (@oper[0].match(/\//) && tmp2.match(/0/))
+					$e.push("It's no possible to divide by zero\n")
+					return nil
+				else
+					ec=tmp+@oper[0]+tmp2					
+					if (ec.to_i>2147483646 || ec.to_i<-2147483646)
+						$e.push("Overflow\n")
+					end
+					return eval(ec).to_s
+				end
 			elsif @oper[0].match(/\=/)
 				return (eval(tmp) == eval(tmp2)).to_s
 			elsif @oper[0].match(/\/=/)
@@ -873,7 +892,7 @@ class DOUBLE_EXP
 			if ((tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
-				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
+				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'\n")
 				return nil
 			end
 		elsif @oper[0].match(/\+|\-|\*|\/|%/)
