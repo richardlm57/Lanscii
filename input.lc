@@ -1,4 +1,6 @@
 { %i @c !b|
-	b=true;
-	
+	i = 12;
+	b = True;
+	i = i + True;
+	(b ? b = 1)
 }

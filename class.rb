@@ -410,9 +410,12 @@ class IF_THEN
 				$e.push("Line: "+@exp.get_oper[1].to_s+", Column: "+@exp.get_oper[2].to_s+" '"+@exp.id[0].to_s+"' is not declared\n")	
 			end
 		else
-			if @exp.get_value.match(/true/)	
-				@body.check
-			end
+			@body.check
+		# 	if @exp.get_value != nil
+		# 		if @exp.get_value.match(/true/)	
+		# 			@body.check
+		# 		end
+		# 	end
 		end
 	end
 end
