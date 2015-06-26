@@ -31,6 +31,18 @@ def print_error(oper,type)
 	end
 end
 
+# Función para ejecutar un deep copy de una matriz
+def deep_copy(matrix)
+	new_mat=Array.new(matrix.length) { Array.new(matrix[0].length) }
+	for i in 0..matrix.length-1 do
+		for j in 0..matrix[0].length-1 do
+			new_mat[i][j]=matrix[i][j]
+		end
+	end
+	return new_mat
+end
+
+
 # Símbolo inicial con declaraciones de variables
 class PROGRAM_DECLARE_BODY
 	attr_accessor :table
@@ -310,6 +322,13 @@ class BODY_WRITE
 				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" '"+@expr.id[0].to_s+"' is not declared")
 			end
 		end
+		canvas=@expr.get_value
+		for i in 0..canvas.length-1
+			for j in 0..canvas[0].length-1
+				print canvas[i][j]
+			end
+			puts ""
+		end
 	end
 end
 
@@ -518,7 +537,7 @@ class ITER
 				$e.push("Line: "+@expr2.get_oper[1].to_s+", Column: "+@expr2.get_oper[2].to_s+" '"+@expr2.id[0].to_s+"' is not declared")	
 			end
 		else
-			[@expr2.get_value.to_i-@expr1.get_value.to_i,0].max.times do 
+			[@expr2.get_value.to_i-@expr1.get_value.to_i+1,0].max.times do 
 				@body.check	
 			end
 		end
@@ -589,11 +608,11 @@ class ID_ITER
 				puts ""
 			end
 			$vt[@id[0]]=@expr1.get_value
-			[@expr2.get_value.to_i-@expr1.get_value.to_i,0].max.times do 
+			[@expr2.get_value.to_i-@expr1.get_value.to_i+1,0].max.times do 
 				@body.check
 				tmp=$vt[@id[0]]
 				$vt[@id[0]]=(tmp.to_i+1).to_s
-				puts $vt
+				#puts $vt
 			end
 			$vt.delete(@id[0])
 			if $st.father != nil
@@ -736,7 +755,10 @@ class EXP_CANVAS
 
 	# Función para obtener el valor de la expresión
 	def get_value
-		return @value[0]
+		if @value[0].match(/#/)
+			return @value[0]
+		end
+		return [[@value[0][1]]]
 	end
 
 	# Función para obtener el tipo de la expresión
@@ -776,17 +798,54 @@ class DOUBLE_EXP
 			elsif @oper[0].match(/\\\//)
 				return (eval(tmp) || eval(tmp2)).to_s
 			elsif @oper[0].match(/~/)
-				return (eval(tmp) + eval(tmp2)).to_s
+				if tmp!="#" && tmp2!="#"
+					if tmp.length==tmp2.length
+						newtmp=deep_copy(tmp)
+						for i in 0..tmp2.length-1 do
+							for j in 0..tmp2[i].length-1 do
+								newtmp[i].push(tmp2[i][j])
+							end
+						end
+						return newtmp
+					else
+						puts @expr1[1].to_s
+					end
+				else
+					if tmp=="#"
+						return tmp2
+					else
+						return tmp
+					end
+				end
+			elsif @oper[0].match(/&/)
+				if tmp!="#" && tmp2!="#"
+					if tmp[0].length==tmp2[0].length
+						newtmp=deep_copy(tmp)
+						for i in 0..tmp2.length-1 do
+							newtmp << tmp2[i]
+						end
+						return newtmp
+					else
+						error="Line: "+@expr1[1].to_s+", Column: "+@expr1[2].to_s+" Incompatible Canvas Horizontal Concatenation "
+						error+="("+@expr1[0]+": "+tmp.length.to_s+"*"+tmp.length.to_s+", "
+						error+="("+@expr2[0]+": "+tmp2.length.to_s+"*"+tmp2.length.to_s+")"
+						$e.push(error)
+					end
+				else
+					if tmp=="#"
+						return tmp2
+					else
+						return tmp
+					end
+				end
 			elsif @oper[0].match(/\+|\-|\*|\/|%|<=|>=|<|>/)
 				ec=tmp+@oper[0]+tmp2
-				#puts ec
 				return eval(ec).to_s
 			elsif @oper[0].match(/\=/)
 				return (eval(tmp) == eval(tmp2)).to_s
 			elsif @oper[0].match(/\/=/)
 				return (eval(tmp) != eval(tmp2)).to_s
 			end	
-			#elsif @oper[0].match(/&/)
 		end
 		return tmp
 	end
@@ -859,8 +918,15 @@ class LEFT_EXP
 		if tmp
 			if @oper[0].match(/\^/)
 				return (!eval(tmp)).to_s
+			elsif @oper[0].match(/'/)
+				newtmp=Array.new(tmp[0].length) { Array.new(tmp.length) }
+				for i in 0..tmp.length-1
+					for j in 0..tmp[0].length-1
+						newtmp[j][i]=tmp[i][j]
+					end
+				end
+				return newtmp
 			end
-			#elsif @oper[0].match(/'/)
 		end
 		return tmp
 	end
@@ -911,8 +977,25 @@ class RIGHT_EXP
 		if tmp
 			if @oper[0].match(/-/)
 				return (-eval(tmp)).to_s
-			end
-			#elsif @oper[0].match(/$/)
+			elsif @oper[0].match(/$/)
+				newtmp=Array.new(tmp.length) { Array.new(tmp[0].length) }
+				for i in 0..tmp.length-1
+					for j in 0..tmp[0].length-1
+						if tmp[i][j].match(/\//)
+							newtmp[i][j]="\\"
+						elsif tmp[i][j].match(/\\/)
+							newtmp[i][j]="/"
+						elsif tmp[i][j].match(/-|_/)
+							newtmp[i][j]="|"
+						elsif tmp[i][j].match(/\|/)
+							newtmp[i][j]="-"
+						elsif tmp[i][j].match(/\s/)
+							newtmp[i][j]=" "
+						end
+					end
+				end
+				return newtmp
+			end	
 		end
 		return tmp
 	end
