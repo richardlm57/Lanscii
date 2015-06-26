@@ -813,7 +813,7 @@ class DOUBLE_EXP
 			if ((tmp==:INT || tmp==:CONT) && (tmp2==:INT || tmp2==:CONT)) || (tmp==:BOOL && tmp2==:BOOL) || (tmp==:CANV && tmp2==:CANV)
 				return :BOOL
 			else
-				$e.push("Line: "+oper[1].to_s+", Column: "+oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
+				$e.push("Line: "+@oper[1].to_s+", Column: "+@oper[2].to_s+" in assignment, type '"+tmp.to_s+"' incompatible with '"+tmp2.to_s+"'")
 				return nil
 			end
 		elsif @oper[0].match(/\+|\-|\*|\/|%/)
