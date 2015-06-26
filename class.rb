@@ -272,20 +272,21 @@ class BODY_READ
 		else
 			matchs=false
 			while !matchs
-				tmp=gets.chomp
+				tmp=$stdin.readline
+				tmp.slice! "\n"
 				if tmp.match(/[0-9]+/)
 					if t==:BOOL
 						puts "Invalid value, please enter a value again"
 					else
 						$vt[@id[0]]=[tmp,0,0]
-						mathcs=true
+						matchs=true
 					end
 				elsif tmp.match(/true|false/)
 					if t==:INT
 						puts "Invalid value, please enter a value again"
 					else
 						$vt[@id[0]]=[tmp,0,0]
-						mathcs=true
+						matchs=true
 					end
 				else
 					puts "Invalid value, please enter a value again"
